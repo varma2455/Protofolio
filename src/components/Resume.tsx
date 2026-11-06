@@ -6,12 +6,11 @@ import {
   CheckCircle2, 
   ShieldCheck, 
   ExternalLink, 
-  X
+  X 
 } from 'lucide-react';
 import { triggerConfetti } from '../utils/confetti';
-import { GenerativeArrowEngine } from './generative/GenerativeArrowEngine';
-import { KineticText } from './generative/KineticText';
-import { GeometricFrame } from './generative/GeometricFrame';
+import { ContentConstructionRegion } from './construction/ContentConstructionRegion';
+import { SectionRevealTimeline } from './construction/SectionRevealTimeline';
 
 export const Resume: React.FC = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -21,6 +20,8 @@ export const Resume: React.FC = () => {
     triggerConfetti();
   };
 
+  const regionSequence = ['resume-header', 'resume-hub', 'resume-breakdown'];
+
   return (
     <section id="resume" className="relative py-28 bg-[#05060A] overflow-hidden">
       {/* Background Cyber Grid */}
@@ -28,251 +29,147 @@ export const Resume: React.FC = () => {
       <div className="ambient-light-orb top-1/3 right-1/4 w-[450px] h-[450px] bg-[#6C63FF]/10" />
       <div className="ambient-light-orb bottom-10 left-10 w-[400px] h-[400px] bg-[#00E5FF]/08" />
 
-      {/* GENERATIVE ARROWS: Resume Document Vectors */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
-        <GenerativeArrowEngine
-          id="resume-arrow-engine"
-          preset="ambient"
-          seed={3821}
-          arrowCount={7}
-          viewBox="0 0 1200 700"
-          colorPalette={['#00E5FF', '#6C63FF', '#10B981']}
-          triggerOnScroll={true}
-          scrollTriggerStart="top 75%"
-        />
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Section Header */}
-        <div className="flex flex-col items-start mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-[#00E5FF] mb-3">
-            <FileText size={13} />
-            <span>07 // CREDENTIAL VERIFICATION</span>
-          </div>
-          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
-            <KineticText
-              text="Curriculum Vitae &"
-              variant="letter-reveal"
-              delay={0.1}
-              className="mr-2"
-            />
-            <span className="text-gradient-cyan-blue">
-              <KineticText
-                text="Resume"
-                variant="gradient-wipe"
-                delay={0.35}
-              />
-            </span>
-          </h2>
-          <p className="text-slate-400 max-w-2xl mt-3 text-base sm:text-lg">
-            Download the official engineering resume or inspect verified credentials and project milestones online.
-          </p>
-        </div>
-
-        {/* Main Resume Showcase Card wrapped in GeometricFrame */}
-        <GeometricFrame
-          coordinates="CV_VERIFIED_DOC"
-          glowColor="#00E5FF"
-          className="p-8 sm:p-10 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
-            {/* Left Column: Highlights & Verification (7 cols) */}
-            <div className="lg:col-span-7 space-y-6">
-              
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-1.5">
-                  <ShieldCheck size={14} />
-                  <span>Verified 2026 Resume</span>
-                </span>
-                <span className="text-xs font-mono text-slate-500">
-                  PDF &bull; 69.6 KB &bull; Direct Local File
-                </span>
+        <SectionRevealTimeline sectionId="resume" regionIds={regionSequence}>
+          
+          {/* 1. Section Header */}
+          <ContentConstructionRegion
+            id="resume-header"
+            shape="chamfer"
+            borderRadius={12}
+            accentColor="#00E5FF"
+            priority={1}
+            className="mb-14 max-w-2xl"
+          >
+            <div className="p-4 sm:p-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-[#00E5FF] mb-3">
+                <FileText size={13} />
+                <span>07 // CREDENTIAL VERIFICATION</span>
               </div>
-
-              <div>
-                <h3 className="font-heading font-extrabold text-2xl sm:text-3xl text-white mb-2">
-                  Yeswanth Varma Pothuri
-                </h3>
-                <p className="text-sm font-mono text-[#00E5FF]">
-                  MERN Stack Developer &bull; B.Tech CSE (2023–2027) &bull; SRKR Engineering College
-                </p>
-              </div>
-
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-mono">
-                Includes full technical breakdowns of 3 flagship MERN projects (Online Food Delivery, E-Commerce Platform, Real-Time Socket.io Chat), 2 industry software internships (Blackbucks Engineers &amp; 1Stop.ai), academic score records (CGPA 6.99, Intermediate 85.3%), and complete contact coordinates.
+              <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
+                Curriculum Vitae &amp; <span className="text-gradient-cyan-blue">Resume Hub</span>
+              </h2>
+              <p className="mt-3 text-slate-400 text-sm sm:text-base font-sans">
+                Review verified academic metrics, internship track records, and production applications in standard PDF format.
               </p>
-
-              {/* Verified Checklist */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono text-slate-300">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-[#00E5FF]" />
-                  <span>MERN Stack Architecture Verified</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-[#00E5FF]" />
-                  <span>2 Industry Software Internships</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-[#00E5FF]" />
-                  <span>REST API &amp; Socket.io Expertise</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-[#00E5FF]" />
-                  <span>Live GitHub Repositories Linked</span>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-white/[0.08]">
-                <a
-                  href={resumePdfUrl}
-                  download="Yeswanth_Varma_MERN_Developer.pdf"
-                  onClick={handleDownload}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-[#6C63FF] via-[#5244E3] to-[#00E5FF] hover:opacity-95 shadow-[0_0_25px_rgba(108,99,255,0.4)] active:scale-95 transition-all group"
-                >
-                  <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
-                  <span>Download Resume (PDF)</span>
-                </a>
-
-                <button
-                  type="button"
-                  onClick={() => setIsPreviewOpen(true)}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-mono text-xs font-medium text-slate-200 glass-panel hover:text-white hover:border-[#00E5FF]/40 transition-all active:scale-95 group cursor-pointer"
-                >
-                  <Eye size={16} className="text-[#00E5FF] group-hover:scale-110 transition-transform" />
-                  <span>Interactive Preview</span>
-                </button>
-              </div>
-
             </div>
+          </ContentConstructionRegion>
 
-            {/* Right Column: Visual Preview Sheet (5 cols) */}
-            <div className="lg:col-span-5 relative flex justify-center">
-              <div
-                onClick={() => setIsPreviewOpen(true)}
-                className="w-full max-w-sm rounded-2xl glass-panel border border-white/[0.12] p-5 cursor-pointer group hover:border-[#00E5FF]/40 hover:-translate-y-1 transition-all duration-300 shadow-[0_15px_30px_rgba(0,0,0,0.5)]"
-              >
-                {/* Document Mockup Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] mb-4">
-                  <div className="flex items-center gap-2">
-                    <FileText size={16} className="text-[#00E5FF]" />
-                    <span className="text-[11px] font-mono text-white font-bold">
-                      RESUME_SNAPSHOT.PDF
+          {/* 2. Primary Resume Card */}
+          <ContentConstructionRegion
+            id="resume-hub"
+            shape="rounded"
+            borderRadius={20}
+            accentColor="#6C63FF"
+            priority={2}
+            className="w-full mb-10"
+          >
+            <div className="p-6 sm:p-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-white/[0.08]">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#6C63FF]/20 to-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
+                    <FileText size={28} />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-bold text-xl text-white">
+                      Yeswanth_Varma_MERN_Developer.pdf
+                    </h3>
+                    <span className="font-mono text-xs text-slate-400">
+                      Standard ATS-Compliant PDF &bull; Current for 2026/2027 Engineering Roles
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400 group-hover:text-[#00E5FF] transition-colors flex items-center gap-1">
-                    <Eye size={12} />
-                    <span>Expand</span>
-                  </span>
                 </div>
 
-                {/* Simulated Document Blocks */}
-                <div className="space-y-3 font-mono text-[11px]">
-                  <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
-                    <span className="text-[#00E5FF] font-bold block">YESWANTH VARMA POTHURI</span>
-                    <span className="text-slate-400 text-[10px] block mt-0.5">MERN Stack Developer &bull; Bhimavaram, AP</span>
-                  </div>
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                  <a
+                    href={resumePdfUrl}
+                    download="Yeswanth_Varma_MERN_Developer.pdf"
+                    onClick={handleDownload}
+                    className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#6C63FF] to-[#00E5FF] text-white font-heading font-semibold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-[#6C63FF]/25 cursor-pointer"
+                  >
+                    <Download size={16} />
+                    <span>Download PDF</span>
+                  </a>
 
-                  <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.04] space-y-1">
-                    <span className="text-slate-500 text-[10px] uppercase font-bold block">Education</span>
-                    <span className="text-white block">SRKR Engineering College &bull; CSE</span>
-                    <span className="text-emerald-400 text-[10px] block">2023–2027 &bull; CGPA: 6.99</span>
-                  </div>
-
-                  <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.04] space-y-1">
-                    <span className="text-slate-500 text-[10px] uppercase font-bold block">Experience</span>
-                    <span className="text-white block">&bull; Blackbucks Engineers (MERN Intern)</span>
-                    <span className="text-white block">&bull; 1Stop.ai (Web Development Intern)</span>
-                  </div>
-
-                  <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.04] space-y-1">
-                    <span className="text-slate-500 text-[10px] uppercase font-bold block">Flagship Projects</span>
-                    <span className="text-slate-300 block">&bull; Online Food Delivery (MERN)</span>
-                    <span className="text-slate-300 block">&bull; E-Commerce Web App (MERN)</span>
-                    <span className="text-slate-300 block">&bull; Real-Time Socket.io Chat</span>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsPreviewOpen(true)}
+                    className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.05] border border-white/10 text-white font-heading font-medium text-sm hover:bg-white/10 hover:border-[#00E5FF]/30 transition-all duration-200 cursor-pointer"
+                  >
+                    <Eye size={16} className="text-[#00E5FF]" />
+                    <span>Quick Preview</span>
+                  </button>
                 </div>
+              </div>
 
-                <div className="mt-4 pt-3 border-t border-white/[0.08] text-center">
-                  <span className="text-[11px] font-mono text-[#00E5FF] group-hover:underline flex items-center justify-center gap-1">
-                    <span>Click to Open Full Document Viewer</span>
-                    <span>&rarr;</span>
-                  </span>
+              {/* Verified Checklist */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 font-mono text-xs text-slate-300">
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-white/[0.02]">
+                  <CheckCircle2 size={15} className="text-emerald-400" />
+                  <span>SRKR B.Tech CSE (6.99 CGPA)</span>
+                </div>
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-white/[0.02]">
+                  <CheckCircle2 size={15} className="text-emerald-400" />
+                  <span>2 MERN Stack Internships</span>
+                </div>
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-white/[0.02]">
+                  <CheckCircle2 size={15} className="text-emerald-400" />
+                  <span>3 Production-Grade Applications</span>
                 </div>
               </div>
             </div>
+          </ContentConstructionRegion>
 
-          </div>
-        </GeometricFrame>
+          {/* 3. Breakdown of Highlights */}
+          <ContentConstructionRegion
+            id="resume-breakdown"
+            shape="chamfer"
+            borderRadius={16}
+            accentColor="#10B981"
+            priority={3}
+            className="w-full"
+          >
+            <div className="p-6 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-slate-300">
+              <div className="flex items-center gap-3">
+                <ShieldCheck size={20} className="text-[#00E5FF]" />
+                <span>Need a tailored version or reference verification? Available for immediate direct technical interview screening.</span>
+              </div>
+              <a
+                href="mailto:yeswanthvarma684280@gmail.com"
+                className="px-4 py-2 rounded-lg bg-white/[0.05] border border-white/10 text-[#00E5FF] hover:bg-white/10 transition-colors shrink-0"
+              >
+                Inquire via Email &rarr;
+              </a>
+            </div>
+          </ContentConstructionRegion>
 
+        </SectionRevealTimeline>
       </div>
 
-      {/* Modal Document Viewer */}
+      {/* Quick Preview Modal */}
       {isPreviewOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
-          <GeometricFrame
-            coordinates="PDF_VIEWER"
-            glowColor="#00E5FF"
-            className="w-full max-w-4xl h-[88vh] bg-[#080B12] shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden"
-          >
-            {/* Viewer Header */}
-            <div className="p-4 sm:p-5 border-b border-white/[0.08] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <FileText size={18} className="text-[#00E5FF]" />
-                <span className="font-heading font-bold text-white text-sm sm:text-base">
-                  Yeswanth Varma Pothuri — Resume Preview
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <a
-                  href={resumePdfUrl}
-                  download="Yeswanth_Varma_MERN_Developer.pdf"
-                  onClick={handleDownload}
-                  className="px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold text-white bg-gradient-to-r from-[#6C63FF] to-[#00E5FF] flex items-center gap-1.5"
-                >
-                  <Download size={14} />
-                  <span>Download</span>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setIsPreviewOpen(false)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white bg-white/[0.06] hover:bg-white/[0.1] cursor-pointer"
-                  aria-label="Close Preview"
-                >
-                  <X size={18} />
-                </button>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="relative w-full max-w-4xl h-[85vh] rounded-2xl bg-[#090D18] border border-white/10 shadow-2xl flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-white/[0.08] bg-[#05060A]">
+              <span className="font-mono text-xs text-[#00E5FF]">DOCUMENT PREVIEW // YESWANTH_VARMA_MERN.PDF</span>
+              <button
+                type="button"
+                onClick={() => setIsPreviewOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white bg-white/[0.05] cursor-pointer"
+              >
+                <X size={18} />
+              </button>
             </div>
-
-            {/* Viewer Body: Embedded iframe with fallback */}
-            <div className="flex-1 w-full h-full bg-[#11141F] relative">
+            <div className="flex-1 w-full bg-slate-900">
               <iframe
                 src={`${resumePdfUrl}#toolbar=0`}
-                title="Yeswanth Varma Resume"
+                title="Resume Preview"
                 className="w-full h-full border-none"
               />
             </div>
-
-            {/* Viewer Footer */}
-            <div className="p-3 px-6 border-t border-white/[0.08] flex items-center justify-between text-xs font-mono text-slate-400 bg-[#080B12]">
-              <span>Verified Local PDF Document</span>
-              <a
-                href={resumePdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#00E5FF] hover:underline flex items-center gap-1"
-              >
-                <span>Open in Full Browser Tab</span>
-                <ExternalLink size={12} />
-              </a>
-            </div>
-          </GeometricFrame>
+          </div>
         </div>
       )}
-
     </section>
   );
 };

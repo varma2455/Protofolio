@@ -6,13 +6,11 @@ import {
   Database, 
   GitBranch, 
   Sparkles, 
-  Code
+  Code 
 } from 'lucide-react';
 import { skillCategories } from '../data/skills';
-import { GenerativeArrowEngine } from './generative/GenerativeArrowEngine';
-import { KineticText } from './generative/KineticText';
-import { GeometricFrame } from './generative/GeometricFrame';
-import { ColorReveal } from './generative/ColorReveal';
+import { ContentConstructionRegion } from './construction/ContentConstructionRegion';
+import { SectionRevealTimeline } from './construction/SectionRevealTimeline';
 
 export const Skills: React.FC = () => {
   const [selectedCatId, setSelectedCatId] = useState<string>('all');
@@ -31,6 +29,8 @@ export const Skills: React.FC = () => {
     ? skillCategories
     : skillCategories.filter((c) => c.id === selectedCatId);
 
+  const regionSequence = ['skills-header', 'skills-filter', 'skills-grid'];
+
   return (
     <section id="skills" className="relative py-28 bg-[#05060A] overflow-hidden">
       {/* Background Decor */}
@@ -38,154 +38,125 @@ export const Skills: React.FC = () => {
       <div className="ambient-light-orb top-1/4 right-0 w-[450px] h-[450px] bg-[#6C63FF]/10" />
       <div className="ambient-light-orb bottom-10 left-10 w-[400px] h-[400px] bg-[#00E5FF]/08" />
 
-      {/* GENERATIVE ARROW ENGINE: Dynamic Skill Constellation */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-65">
-        <GenerativeArrowEngine
-          id="skills-constellation-engine"
-          preset="skills"
-          seed={9301}
-          arrowCount={10}
-          viewBox="0 0 1300 850"
-          colorPalette={['#00E5FF', '#6C63FF', '#A855F7']}
-          triggerOnScroll={true}
-          scrollTriggerStart="top 75%"
-        />
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-[#00E5FF] mb-3">
-              <Cpu size={13} />
-              <span>05 // TECHNICAL MATRIX</span>
+        <SectionRevealTimeline sectionId="skills" regionIds={regionSequence}>
+          
+          {/* 1. Section Header */}
+          <ContentConstructionRegion
+            id="skills-header"
+            shape="chamfer"
+            borderRadius={12}
+            accentColor="#00E5FF"
+            priority={1}
+            className="mb-10 max-w-2xl"
+          >
+            <div className="p-4 sm:p-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-[#00E5FF] mb-3">
+                <Cpu size={13} />
+                <span>05 // TECHNICAL MATRIX</span>
+              </div>
+              <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
+                Skills &amp; Technical <span className="text-gradient-cyan-blue">Expertise</span>
+              </h2>
+              <p className="mt-3 text-slate-400 text-sm sm:text-base font-sans">
+                A verified breakdown of language proficiencies, backend systems, database patterns, and modern frontend frameworks.
+              </p>
             </div>
-            <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
-              <KineticText
-                text="Skills & Engineering"
-                variant="letter-reveal"
-                delay={0.1}
-                className="mr-2"
-              />
-              <span className="text-gradient-cyan-blue">
-                <KineticText
-                  text="Constellation"
-                  variant="gradient-wipe"
-                  delay={0.35}
-                />
-              </span>
-            </h2>
-            <p className="text-slate-400 max-w-2xl mt-3 text-base sm:text-lg">
-              Full-spectrum technical proficiencies organized across frontend, backend, database modeling, and computer science foundations.
-            </p>
-          </div>
+          </ContentConstructionRegion>
 
-          {/* Filter Pills */}
-          <div className="flex flex-wrap gap-2 p-1 rounded-xl glass-panel border border-white/[0.08] self-start md:self-auto">
-            <button
-              type="button"
-              onClick={() => setSelectedCatId('all')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
-                selectedCatId === 'all'
-                  ? 'bg-[#6C63FF] text-white shadow-sm font-semibold'
-                  : 'text-slate-400 hover:text-white hover:bg-white/[0.03]'
-              }`}
-            >
-              All Domains
-            </button>
-            {skillCategories.map((cat) => (
+          {/* 2. Category Filters */}
+          <ContentConstructionRegion
+            id="skills-filter"
+            shape="rounded"
+            borderRadius={12}
+            accentColor="#6C63FF"
+            priority={2}
+            className="mb-12 w-full"
+          >
+            <div className="flex flex-wrap gap-2 p-3">
               <button
-                key={cat.id}
                 type="button"
-                onClick={() => setSelectedCatId(cat.id)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
-                  selectedCatId === cat.id
-                    ? 'bg-[#6C63FF] text-white shadow-sm font-semibold'
-                    : 'text-slate-400 hover:text-white hover:bg-white/[0.03]'
+                onClick={() => setSelectedCatId('all')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-mono cursor-pointer transition-all ${
+                  selectedCatId === 'all'
+                    ? 'bg-gradient-to-r from-[#6C63FF] to-[#00E5FF] text-white font-bold'
+                    : 'bg-white/[0.03] text-slate-400 hover:text-white border border-white/[0.06]'
                 }`}
               >
-                {cat.title.split(' ')[0]}
+                All Categories
               </button>
-            ))}
-          </div>
-        </div>
+              {skillCategories.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCatId(cat.id)}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-mono cursor-pointer transition-all ${
+                    selectedCatId === cat.id
+                      ? 'bg-gradient-to-r from-[#6C63FF] to-[#00E5FF] text-white font-bold'
+                      : 'bg-white/[0.03] text-slate-400 hover:text-white border border-white/[0.06]'
+                  }`}
+                >
+                  {cat.title}
+                </button>
+              ))}
+            </div>
+          </ContentConstructionRegion>
 
-        {/* Categories Grid with Constellation Connection Frames */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCategories.map((category, idx) => {
-            const Icon = categoryIcons[category.id] || Cpu;
-            return (
-              <GeometricFrame
-                key={category.id}
-                coordinates={`SKILL_NODE_${idx + 1}`}
-                glowColor={idx % 2 === 0 ? '#00E5FF' : '#A855F7'}
-                className="p-6 sm:p-7 flex flex-col justify-between"
-              >
-                <div>
-                  {/* Category Header */}
-                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-5">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#00E5FF]">
-                        <Icon size={20} />
-                      </div>
-                      <div>
-                        <h3 className="font-heading font-bold text-lg text-white">
-                          {category.title}
+          {/* 3. Skill Cards Grid */}
+          <ContentConstructionRegion
+            id="skills-grid"
+            shape="rounded"
+            borderRadius={20}
+            accentColor="#A855F7"
+            priority={3}
+            className="w-full"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 sm:p-8">
+              {filteredCategories.map((cat) => {
+                const Icon = categoryIcons[cat.id] || Cpu;
+                return (
+                  <div
+                    key={cat.id}
+                    className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#00E5FF]/30 transition-all duration-300 flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-white/[0.06]">
+                        <div className="p-2 rounded-lg bg-white/[0.04] text-[#00E5FF]">
+                          <Icon size={16} />
+                        </div>
+                        <h3 className="font-heading font-bold text-base text-white">
+                          {cat.title}
                         </h3>
-                        <span className="text-[11px] font-mono text-slate-400">
-                          {category.badge}
-                        </span>
+                      </div>
+
+                      <div className="space-y-3">
+                        {cat.skills.map((s, sIdx) => (
+                          <div key={sIdx} className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                            <div className="flex items-center justify-between text-xs font-mono mb-1">
+                              <span className="text-white font-medium">{s.name}</span>
+                              <span className="text-[10px] text-[#00E5FF] px-1.5 py-0.5 rounded bg-[#00E5FF]/10">
+                                {s.category}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
+                              {s.description}
+                            </p>
+                          </div>
+                        ))}
                       </div>
                     </div>
+
+                    <div className="mt-4 pt-3 border-t border-white/[0.05] flex items-center justify-between text-[10px] font-mono text-slate-500">
+                      <span>VERIFIED PRODUCTION LEVEL</span>
+                      <span className="text-emerald-400">ACTIVE</span>
+                    </div>
                   </div>
+                );
+              })}
+            </div>
+          </ContentConstructionRegion>
 
-                  <p className="text-xs text-slate-400 leading-relaxed mb-6 font-sans">
-                    {category.description}
-                  </p>
-
-                  {/* Skills List with Dynamic Arrow Connectors */}
-                  <div className="space-y-3">
-                    {category.skills.map((skill) => (
-                      <div
-                        key={skill.name}
-                        className={`p-3 rounded-xl transition-all duration-300 ${
-                          skill.highlight
-                            ? 'bg-gradient-to-r from-[#6C63FF]/15 to-transparent border border-[#6C63FF]/30 shadow-[0_0_12px_rgba(108,99,255,0.15)]'
-                            : 'bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] hover:border-white/[0.1]'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-1">
-                          <span className={`text-xs font-mono font-bold flex items-center gap-1.5 ${
-                            skill.highlight ? 'text-[#00E5FF]' : 'text-slate-200'
-                          }`}>
-                            <span className="text-slate-500 text-[10px]">&rarr;</span>
-                            {skill.name}
-                          </span>
-                          {skill.highlight && (
-                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20">
-                              CORE
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
-                          {skill.description}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Footer Count */}
-                <div className="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono text-slate-500">
-                  <span>{category.skills.length} Specialized Competencies</span>
-                  <span className="text-emerald-400">&bull; Verified</span>
-                </div>
-              </GeometricFrame>
-            );
-          })}
-        </div>
-
+        </SectionRevealTimeline>
       </div>
     </section>
   );
