@@ -1,94 +1,145 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Lenis from 'lenis';
-import { ThemeProvider } from './context/ThemeContext';
-import { HomePage } from './pages/Home/HomePage';
-import { ProjectDetailPage } from './pages/ProjectDetail/ProjectDetailPage';
-import { NotFoundPage } from './pages/NotFound/NotFoundPage';
-import { ResumeModal } from './components/common/ResumeModal';
-import { CustomCursor } from './components/common/CustomCursor';
-import { ShaderBackground } from './components/common/ShaderBackground';
-
-// Route change scroll restoration helper
-const ScrollToTop: React.FC = () => {
-  const { pathname } = useLocation();
-
-  React.useEffect(() => {
-    // Only scroll to top if not targeting an anchor hash
-    if (!window.location.hash) {
-      window.scrollTo(0, 0);
-    }
-  }, [pathname]);
-
-  return null;
-};
-
-export const AppContent: React.FC = () => {
-  const [resumeModalOpen, setResumeModalOpen] = useState(false);
-
-  return (
-    <>
-      <ScrollToTop />
-      {/* Dynamic GLSL WebGL Background */}
-      <ShaderBackground />
-
-      {/* Interactive Cursor Reticle */}
-      <CustomCursor />
-
-      <Routes>
-        <Route
-          path="/"
-          element={<HomePage onOpenResumeModal={() => setResumeModalOpen(true)} />}
-        />
-        <Route
-          path="/projects/:id"
-          element={<ProjectDetailPage onOpenResumeModal={() => setResumeModalOpen(true)} />}
-        />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-
-      {/* Global Resume Preview Modal */}
-      <ResumeModal
-        isOpen={resumeModalOpen}
-        onClose={() => setResumeModalOpen(false)}
-      />
-    </>
-  );
-};
+import React from 'react';
+import { useLenis } from './hooks/useLenis';
+import { useActiveSection } from './hooks/useActiveSection';
+import { Navbar } from './components/Navbar';
+import { Hero } from './components/Hero';
+import { About } from './components/About';
+import { TechStack } from './components/TechStack';
+import { Projects } from './components/Projects';
+import { Experience } from './components/Experience';
+import { Skills } from './components/Skills';
+import { Education } from './components/Education';
+import { Resume } from './components/Resume';
+import { Contact } from './components/Contact';
+import { Footer } from './components/Footer';
+import { SectionTransition } from './components/generative/SectionTransition';
 
 export const App: React.FC = () => {
-  useEffect(() => {
-    // Check if user prefers reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+  // Initialize Lenis smooth scroll
+  useLenis();
 
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      touchMultiplier: 2,
-      infinite: false,
-    });
-
-    let animationFrameId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      animationFrameId = requestAnimationFrame(raf);
-    }
-
-    animationFrameId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      lenis.destroy();
-    };
-  }, []);
+  // Track active section for navbar highlighting
+  const activeSection = useActiveSection([
+    'hero',
+    'about',
+    'tech-stack',
+    'projects',
+    'experience',
+    'skills',
+    'education',
+    'resume',
+    'contact',
+  ]);
 
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </ThemeProvider>
+    <div className="relative min-h-screen bg-[#05060A] text-[#F5F7FA] selection:bg-[#6C63FF]/30 selection:text-white">
+      {/* Background Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="ambient-light-orb top-[-100px] left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-[#6C63FF]/10" />
+        <div className="ambient-light-orb top-[40%] right-[-150px] w-[600px] h-[600px] bg-[#00E5FF]/06" />
+        <div className="ambient-light-orb bottom-[10%] left-[-150px] w-[700px] h-[700px] bg-[#A855F7]/08" />
+      </div>
+
+      {/* Main Website Structure */}
+      <div className="relative z-10">
+        <Navbar activeSection={activeSection} />
+        
+        <main>
+          {/* Hero Section */}
+          <Hero />
+
+          {/* Section Transition 01 */}
+          <SectionTransition
+            fromSection="HERO"
+            toSection="ABOUT"
+            direction="down"
+            coordinates="16.54°N, 81.52°E"
+          />
+
+          {/* About Section */}
+          <About />
+
+          {/* Section Transition 02 */}
+          <SectionTransition
+            fromSection="ABOUT"
+            toSection="TECH_STACK"
+            direction="diagonal-right"
+            coordinates="MERN_STACK_V4"
+          />
+
+          {/* Technology Stack Section */}
+          <TechStack />
+
+          {/* Section Transition 03 */}
+          <SectionTransition
+            fromSection="TECH_STACK"
+            toSection="PROJECTS"
+            direction="down"
+            coordinates="FLAGSHIP_CASES"
+          />
+
+          {/* Projects Section */}
+          <Projects />
+
+          {/* Section Transition 04 */}
+          <SectionTransition
+            fromSection="PROJECTS"
+            toSection="EXPERIENCE"
+            direction="diagonal-left"
+            coordinates="INDUSTRY_INTERN"
+          />
+
+          {/* Experience Section */}
+          <Experience />
+
+          {/* Section Transition 05 */}
+          <SectionTransition
+            fromSection="EXPERIENCE"
+            toSection="SKILLS"
+            direction="down"
+            coordinates="MATRIX_SKILLS"
+          />
+
+          {/* Skills Section */}
+          <Skills />
+
+          {/* Section Transition 06 */}
+          <SectionTransition
+            fromSection="SKILLS"
+            toSection="EDUCATION"
+            direction="diagonal-right"
+            coordinates="SRKR_CSE_2027"
+          />
+
+          {/* Education Section */}
+          <Education />
+
+          {/* Section Transition 07 */}
+          <SectionTransition
+            fromSection="EDUCATION"
+            toSection="RESUME"
+            direction="down"
+            coordinates="VERIFIED_CV"
+          />
+
+          {/* Resume Section */}
+          <Resume />
+
+          {/* Section Transition 08 */}
+          <SectionTransition
+            fromSection="RESUME"
+            toSection="CONTACT"
+            direction="diagonal-left"
+            coordinates="TRANSMISSION_PORTAL"
+          />
+
+          {/* Contact Section */}
+          <Contact />
+        </main>
+
+        <Footer />
+      </div>
+    </div>
   );
 };
 

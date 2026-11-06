@@ -1,0 +1,71 @@
+import React from 'react';
+import { ArrowPath } from './ArrowPath';
+
+export interface SectionTransitionProps {
+  fromSection: string;
+  toSection: string;
+  direction?: 'down' | 'diagonal-left' | 'diagonal-right';
+  coordinates?: string;
+  className?: string;
+}
+
+export const SectionTransition: React.FC<SectionTransitionProps> = ({
+  fromSection,
+  toSection,
+  direction = 'down',
+  coordinates = '16.54°N, 81.52°E',
+  className = '',
+}) => {
+  let pathD = 'M 500 0 L 500 80';
+  let arrowAngle = 90;
+
+  if (direction === 'diagonal-right') {
+    pathD = 'M 300 0 Q 400 40 700 80';
+    arrowAngle = 25;
+  } else if (direction === 'diagonal-left') {
+    pathD = 'M 700 0 Q 600 40 300 80';
+    arrowAngle = 155;
+  }
+
+  return (
+    <div className={`relative w-full h-20 overflow-hidden flex items-center justify-center pointer-events-none select-none z-20 ${className}`}>
+      {/* Background Central Tick Line */}
+      <div className="absolute inset-x-0 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+
+      {/* Center SVG Connector Arrow */}
+      <svg
+        width="1000"
+        height="80"
+        viewBox="0 0 1000 80"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full max-w-5xl"
+      >
+        <ArrowPath
+          d={pathD}
+          color="#00E5FF"
+          glowColor="rgba(0, 229, 255, 0.4)"
+          strokeWidth={1.4}
+          duration={1.2}
+          hasArrowHead={true}
+          arrowHeadAngle={arrowAngle}
+          showParticle={true}
+        />
+
+        {/* Start and End Anchor Calibrators */}
+        <circle cx="500" cy="6" r="3" fill="#6C63FF" filter="drop-shadow(0 0 4px #6C63FF)" />
+        <circle cx="500" cy="74" r="3" fill="#00E5FF" filter="drop-shadow(0 0 4px #00E5FF)" />
+      </svg>
+
+      {/* Ambient Telemetry Badge */}
+      <div className="absolute px-3 py-0.5 rounded-full bg-[#05060A]/80 border border-white/[0.08] backdrop-blur-md flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-ping" />
+        <span className="text-[9px] font-mono tracking-widest text-slate-500 uppercase">
+          LINK: {fromSection} &rarr; {toSection} // {coordinates}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+export default SectionTransition;
