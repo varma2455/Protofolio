@@ -15,6 +15,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { profileData } from '../../data/profile';
+import { HeroVisual3D } from './HeroVisual3D';
 
 interface HeroSectionProps {
   onOpenResumeModal: () => void;
@@ -146,8 +147,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResumeModal }) =
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="lg:col-span-5 flex justify-center lg:justify-end"
+            className="lg:col-span-5 flex justify-center lg:justify-end relative"
           >
+            {/* Subtle 3D Ambient Cluster Node */}
+            <div className="absolute -top-16 -right-16 w-80 h-80 pointer-events-none hidden sm:block">
+              <HeroVisual3D />
+            </div>
+
             <div className="relative w-full max-w-md">
               {/* Outer Glow Ring */}
               <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-tr from-accent-blue/30 via-accent-violet/20 to-transparent blur-lg opacity-70" />
