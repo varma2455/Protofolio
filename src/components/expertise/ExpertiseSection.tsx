@@ -36,6 +36,7 @@ import {
 import { skillCategories } from '../../data/skills';
 import { TechCategoryType, TechItem } from '../../types';
 import { ArchitectureVisualizer } from '../common/ArchitectureVisualizer';
+import { MernStackVisualizer3D } from './MernStackVisualizer3D';
 
 export const ExpertiseSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<TechCategoryType>('frontend');
@@ -141,6 +142,14 @@ export const ExpertiseSection: React.FC = () => {
           <p className="text-slate-400 light:text-slate-600 font-mono text-sm mt-2 max-w-2xl">
             Clean categorization of technologies utilized in production and academic engineering. No arbitrary percentages — only authentic implementation competence.
           </p>
+        </div>
+
+        {/* 3D MERN Architecture Matrix Visualization */}
+        <div className="mb-10">
+          <MernStackVisualizer3D
+            activeCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
         </div>
 
         {/* Category Navigation Tabs */}

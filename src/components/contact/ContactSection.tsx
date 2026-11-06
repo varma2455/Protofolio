@@ -222,14 +222,39 @@ export const ContactSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Availability Notice Card */}
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent border border-emerald-500/20 text-xs font-mono">
-              <div className="flex items-center gap-2 text-emerald-400 font-semibold mb-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Currently Open for Opportunities</span>
+            {/* Atmospheric Telemetry & Availability Notice Card */}
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-[#10141D] to-[#0A0D15] border border-white/10 text-xs font-mono shadow-xl relative overflow-hidden">
+              {/* Radar Sweep Effect */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-3">
+                <div className="flex items-center gap-2 text-emerald-400 font-semibold">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  <span>Direct Uplink Active</span>
+                </div>
+                <span className="text-[10px] text-slate-500">
+                  IST (UTC +5:30)
+                </span>
               </div>
-              <p className="text-slate-400 light:text-slate-600 font-sans mt-1 leading-relaxed">
-                Available for MERN Stack Developer, Full-Stack Software Engineer, and Backend/Frontend roles.
+
+              <div className="space-y-1.5 text-[11px] text-slate-400">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Coordinates:</span>
+                  <span className="text-slate-300">16.5449° N, 81.5212° E (AP)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Primary Hub:</span>
+                  <span className="text-accent-blue font-semibold">SRKR Engineering College</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Security Layer:</span>
+                  <span className="text-accent-violet">TLS 1.3 End-to-End Handshake</span>
+                </div>
+              </div>
+
+              <p className="text-slate-400 light:text-slate-600 font-sans mt-3 pt-2 border-t border-white/5 leading-relaxed text-xs">
+                Currently available for Full-Stack MERN Developer and Web Engineering opportunities.
               </p>
             </div>
 

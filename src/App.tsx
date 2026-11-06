@@ -6,6 +6,8 @@ import { HomePage } from './pages/Home/HomePage';
 import { ProjectDetailPage } from './pages/ProjectDetail/ProjectDetailPage';
 import { NotFoundPage } from './pages/NotFound/NotFoundPage';
 import { ResumeModal } from './components/common/ResumeModal';
+import { CustomCursor } from './components/common/CustomCursor';
+import { ShaderBackground } from './components/common/ShaderBackground';
 
 // Route change scroll restoration helper
 const ScrollToTop: React.FC = () => {
@@ -27,6 +29,12 @@ export const AppContent: React.FC = () => {
   return (
     <>
       <ScrollToTop />
+      {/* Dynamic GLSL WebGL Background */}
+      <ShaderBackground />
+
+      {/* Interactive Cursor Reticle */}
+      <CustomCursor />
+
       <Routes>
         <Route
           path="/"

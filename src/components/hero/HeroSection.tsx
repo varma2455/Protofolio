@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowDown, 
   Github, 
@@ -12,16 +12,21 @@ import {
   Database, 
   Server, 
   Code2,
-  ExternalLink
+  ExternalLink,
+  Cpu,
+  User
 } from 'lucide-react';
 import { profileData } from '../../data/profile';
-import { HeroVisual3D } from './HeroVisual3D';
+import { HeroScene3D } from './HeroScene3D';
+import { TextReveal } from '../common/TextReveal';
 
 interface HeroSectionProps {
   onOpenResumeModal: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResumeModal }) => {
+  const [activeView, setActiveView] = useState<'3d' | 'profile'>('3d');
+
   const techPills = [
     { label: 'MongoDB', icon: Database, color: 'text-emerald-400', border: 'border-emerald-500/20' },
     { label: 'Express.js', icon: Server, color: 'text-slate-300', border: 'border-slate-500/20' },
@@ -52,19 +57,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResumeModal }) =
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="lg:col-span-7 flex flex-col items-start text-left"
           >
-            {/* Eyebrow Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-blue/10 border border-accent-blue/20 text-accent-blue text-xs font-mono font-medium tracking-wide mb-6">
-              <span className="w-2 h-2 rounded-full bg-accent-blue animate-pulse" />
-              <span>{profileData.eyebrow}</span>
+            {/* Telemetry Coordinate Eyebrow */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-blue/10 border border-accent-blue/20 text-accent-blue text-xs font-mono font-medium tracking-wide">
+                <span className="w-2 h-2 rounded-full bg-accent-blue animate-pulse" />
+                <span>{profileData.eyebrow}</span>
+              </div>
+              <span className="text-[11px] font-mono text-slate-500 hidden sm:inline-block">
+                [LOC: 16.54° N, 81.52° E]
+              </span>
             </div>
 
-            {/* Main Headline */}
+            {/* Main Headline with Animated Reveal */}
             <h1 className="font-heading font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-white light:text-slate-900 leading-[1.08] mb-6">
-              Engineering the web,{' '}
+              <TextReveal text="Engineering the web," as="span" />{' '}
               <span className="bg-gradient-to-r from-accent-blue via-accent-violet to-purple-400 bg-clip-text text-transparent">
                 one meaningful experience
               </span>{' '}
-              at a time.
+              <TextReveal text="at a time." as="span" delay={0.2} />
             </h1>
 
             {/* Supporting Description */}
@@ -142,18 +152,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResumeModal }) =
             </div>
           </motion.div>
 
-          {/* Right Column: Editorial Portrait & Engineering Composition (5 cols) */}
+          {/* Right Column: 3D Metallic Object & Editorial Composition (5 cols) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.15 }}
             className="lg:col-span-5 flex justify-center lg:justify-end relative"
           >
-            {/* Subtle 3D Ambient Cluster Node */}
-            <div className="absolute -top-16 -right-16 w-80 h-80 pointer-events-none hidden sm:block">
-              <HeroVisual3D />
-            </div>
-
             <div className="relative w-full max-w-md">
               {/* Outer Glow Ring */}
               <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-tr from-accent-blue/30 via-accent-violet/20 to-transparent blur-lg opacity-70" />
@@ -161,45 +166,84 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResumeModal }) =
               {/* Main Card */}
               <div className="relative rounded-3xl bg-[#10141D] light:bg-white border border-white/10 light:border-slate-200 p-3 sm:p-4 shadow-2xl overflow-hidden">
                 
-                {/* Window Control Bar */}
+                {/* Window Control Bar with Interactive View Toggle */}
                 <div className="flex items-center justify-between pb-3 px-2 border-b border-white/5 light:border-slate-200 text-xs font-mono text-slate-400 light:text-slate-500">
                   <div className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                   </div>
-                  <span className="text-[11px] text-slate-400">yeswanth_varma.tsx</span>
-                  <span className="text-[10px] text-accent-blue">MERN Stack</span>
+                  
+                  {/* Mode switcher tabs */}
+                  <div className="flex items-center gap-1 p-0.5 rounded-lg bg-black/40 light:bg-slate-100 border border-white/5">
+                    <button
+                      onClick={() => setActiveView('3d')}
+                      className={`flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono transition-colors ${
+                        activeView === '3d'
+                          ? 'bg-accent-blue text-white shadow-sm'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <Cpu className="w-3 h-3" />
+                      <span>3D Core</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveView('profile')}
+                      className={`flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono transition-colors ${
+                        activeView === 'profile'
+                          ? 'bg-accent-blue text-white shadow-sm'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <User className="w-3 h-3" />
+                      <span>Portrait</span>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Profile Image with subtle editorial treatment */}
-                <div className="relative mt-3 rounded-2xl overflow-hidden aspect-square bg-[#080A0F] border border-white/5 group">
-                  <img
-                    src="/images/varma_profile.png"
-                    alt="Yeswanth Varma Pothuri"
-                    className="w-full h-full object-cover object-top filter grayscale contrast-105 group-hover:grayscale-0 group-hover:scale-102 transition-all duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#080A0F] via-transparent to-transparent opacity-80" />
-
-                  {/* Overlaid Badges */}
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 p-3 rounded-xl bg-[#10141D]/90 backdrop-blur-md border border-white/10">
-                    <div>
-                      <div className="text-xs font-heading font-bold text-white">
-                        {profileData.name}
-                      </div>
-                      <div className="text-[10px] font-mono text-slate-400">
-                        SRKR CSE '27 • Bhimavaram
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-[10px] font-mono text-emerald-400 font-medium">
-                        Open for Roles
-                      </span>
-                      <span className="text-[9px] font-mono text-slate-500">
-                        Full-Stack MERN
-                      </span>
-                    </div>
-                  </div>
+                {/* Viewport: 3D Core or Profile Image */}
+                <div className="relative mt-3 rounded-2xl overflow-hidden aspect-square bg-[#080A0F] border border-white/5">
+                  <AnimatePresence mode="wait">
+                    {activeView === '3d' ? (
+                      <motion.div
+                        key="3d"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="w-full h-full"
+                      >
+                        <HeroScene3D />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="profile"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="w-full h-full relative group"
+                      >
+                        <img
+                          src="/images/varma_profile.png"
+                          alt="Yeswanth Varma Pothuri"
+                          className="w-full h-full object-cover object-top filter grayscale contrast-105 group-hover:grayscale-0 group-hover:scale-102 transition-all duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#080A0F] via-transparent to-transparent opacity-80" />
+                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 p-3 rounded-xl bg-[#10141D]/90 backdrop-blur-md border border-white/10">
+                          <div>
+                            <div className="text-xs font-heading font-bold text-white">
+                              {profileData.name}
+                            </div>
+                            <div className="text-[10px] font-mono text-slate-400">
+                              SRKR CSE '27 • Bhimavaram
+                            </div>
+                          </div>
+                          <span className="text-[10px] font-mono text-emerald-400 font-medium">
+                            Available
+                          </span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Micro Stats Bar */}
@@ -217,6 +261,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResumeModal }) =
                     <div className="text-[10px] text-slate-400">CGPA</div>
                   </div>
                 </div>
+
               </div>
             </div>
           </motion.div>
