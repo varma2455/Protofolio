@@ -32,3 +32,4 @@ export * from './GlobalArrowPool';
 export * from './ScrollVelocityController';
 export * from './ArrowTaskManager';
 export * from './GlobalArrowOverlay';
+export * from './TrishulTransformation';

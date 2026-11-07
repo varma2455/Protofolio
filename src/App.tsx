@@ -14,6 +14,7 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { ScrollConstructionController } from './components/construction/ScrollConstructionController';
 import { GlobalArrowOverlay } from './components/construction/GlobalArrowOverlay';
+import { TrishulTransformation } from './components/construction/TrishulTransformation';
 
 export const App: React.FC = () => {
   // Initialize Lenis smooth scroll
@@ -49,6 +50,9 @@ export const App: React.FC = () => {
 
       {/* EXACTLY 10 PERSISTENT INTELLIGENT ARROW AGENTS & SUDARSHAN CHAKRA ENERGY WHEEL */}
       <GlobalArrowOverlay />
+
+      {/* SUDARSHAN CHAKRA → TRISHUL ATOM-PARTICLE TRANSFORMATION */}
+      <TrishulTransformation />
 
       {/* Main Website Structure */}
       <div className="relative z-10">
