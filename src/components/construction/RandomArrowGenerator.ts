@@ -1,8 +1,7 @@
 /**
  * RandomArrowGenerator.ts
- * Seeded generative arrow parameter engine for VARMA.DEV.
- * Provides deterministic, visually balanced trajectories, palettes,
- * shapes, and timings for boundary tracing and text painting arrows.
+ * Seeded generative arrow parameter engine for VARMA.DEV Midnight Navy Design System.
+ * Uses refined champagne gold (#D6B36A) with warm bronze accents (#B99555).
  */
 
 export type ArrowEdge =
@@ -29,7 +28,7 @@ export interface ArrowTrajectoryParams {
   drawDuration: number;
   exitDuration: number;
   sweepDirection: 'ltr' | 'rtl' | 'ttb' | 'diagonal';
-  curveCurvature: number; // Curve bend factor for entrance/exit
+  curveCurvature: number;
   scale: number;
 }
 
@@ -54,12 +53,12 @@ function seededRandom(seed: number): () => number {
   };
 }
 
+// Refined Obsidian Gold palette: Metallic Champagne Gold dominant with warm bronze-gold accents
 const PALETTES = [
-  { primary: '#00E5FF', glow: 'rgba(0, 229, 255, 0.55)', secondary: '#6C63FF' }, // Electric Cyan
-  { primary: '#6C63FF', glow: 'rgba(108, 99, 255, 0.55)', secondary: '#00E5FF' }, // Electric Violet
-  { primary: '#A855F7', glow: 'rgba(168, 85, 247, 0.55)', secondary: '#38BDF8' }, // Neon Purple
-  { primary: '#38BDF8', glow: 'rgba(56, 189, 248, 0.55)', secondary: '#A855F7' }, // Ice Blue
-  { primary: '#10B981', glow: 'rgba(16, 185, 129, 0.55)', secondary: '#00E5FF' }, // Neon Emerald
+  { primary: '#D6B36A', glow: 'rgba(214, 179, 106, 0.25)', secondary: '#B99555' }, // Champagne Gold dominant
+  { primary: '#E5C98A', glow: 'rgba(214, 179, 106, 0.28)', secondary: '#D6B36A' }, // Light Champagne Gold
+  { primary: '#B99555', glow: 'rgba(185, 149, 85, 0.24)', secondary: '#D6B36A' }, // Warm Bronze Gold
+  { primary: '#D6B36A', glow: 'rgba(214, 179, 106, 0.25)', secondary: '#E5C98A' }, // Dual Gold
 ];
 
 const EDGES: ArrowEdge[] = [
@@ -82,27 +81,21 @@ export function generateArrowParams(
   const seed = hashString(`${id}-${phase}`);
   const rand = seededRandom(seed);
 
-  // Palette
+  // Palette: Mostly cyan, occasional violet
   const paletteIdx = Math.floor(rand() * PALETTES.length);
   const palette = PALETTES[paletteIdx];
 
   // Entry and Exit edges
   let entryIdx = Math.floor(rand() * EDGES.length);
-  // Ensure paint phase enters from a different edge than boundary
   if (phase === 'paint') {
     entryIdx = (entryIdx + 3) % EDGES.length;
   }
   const entryEdge = EDGES[entryIdx];
 
-  // Exit edge must be different from entry
   let exitIdx = (entryIdx + 2 + Math.floor(rand() * 4)) % EDGES.length;
   const exitEdge = EDGES[exitIdx];
 
   const shape = SHAPES[Math.floor(rand() * SHAPES.length)];
-
-  // Sweeps:
-  const sweeps: ('ltr' | 'rtl' | 'ttb' | 'diagonal')[] = ['ltr', 'diagonal', 'ltr', 'diagonal'];
-  const sweepDirection = sweeps[Math.floor(rand() * sweeps.length)];
 
   return {
     id: `${id}-${phase}`,
@@ -112,11 +105,11 @@ export function generateArrowParams(
     secondaryColor: palette.secondary,
     entryEdge,
     exitEdge,
-    entryDuration: 0.55 + rand() * 0.25,
-    drawDuration: phase === 'boundary' ? 0.9 + rand() * 0.35 : 0.85 + rand() * 0.3,
-    exitDuration: 0.4 + rand() * 0.2,
-    sweepDirection,
-    curveCurvature: 0.2 + rand() * 0.3,
-    scale: 0.9 + rand() * 0.25,
+    entryDuration: 0.28 + rand() * 0.1,
+    drawDuration: phase === 'boundary' ? 0.42 + rand() * 0.15 : 0.35 + rand() * 0.1,
+    exitDuration: 0.2 + rand() * 0.08,
+    sweepDirection: 'ltr',
+    curveCurvature: 0.2 + rand() * 0.25,
+    scale: 0.9 + rand() * 0.2,
   };
 }

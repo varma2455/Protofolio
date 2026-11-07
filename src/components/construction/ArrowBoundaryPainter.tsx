@@ -1,9 +1,10 @@
 /**
  * ArrowBoundaryPainter.tsx
- * Renders the physical boundary tracing for a container:
- * - Animated SVG path with stroke-dashoffset
- * - Physically attached Arrowhead leading the stroke at the exact point & tangent
- * - Glowing luminous trail and particle spark
+ * Refined Obsidian Gold boundary tracing for VARMA.DEV.
+ * Features:
+ * - Subtle border guide before/after drawing: rgba(214, 179, 106, 0.20)
+ * - Refined soft illumination during arrow tracing
+ * - Leading arrow head in champagne gold (#D6B36A) / warm bronze (#B99555)
  */
 
 import React, { useRef, useEffect, useState, useId } from 'react';
@@ -43,13 +44,12 @@ export const ArrowBoundaryPainter: React.FC<ArrowBoundaryPainterProps> = ({
     angle: 0,
   });
 
-  // Generate perimeter path data
   const generatePath = () => {
     if (width <= 0 || height <= 0) return '';
     const r = Math.min(borderRadius, width / 2, height / 2);
 
     if (shape === 'chamfer') {
-      const c = Math.min(18, width / 4, height / 4);
+      const c = Math.min(16, width / 4, height / 4);
       return `M ${c} 0 L ${width - c} 0 L ${width} ${c} L ${width} ${height - c} L ${width - c} ${height} L ${c} ${height} L 0 ${height - c} L 0 ${c} Z`;
     }
 
@@ -57,7 +57,6 @@ export const ArrowBoundaryPainter: React.FC<ArrowBoundaryPainterProps> = ({
       return `M 0 0 L ${width} 0 L ${width} ${height} L 0 ${height} Z`;
     }
 
-    // Smooth rounded rectangle starting top-left
     return `M ${r} 0 
             L ${width - r} 0 
             A ${r} ${r} 0 0 1 ${width} ${r} 
@@ -71,7 +70,6 @@ export const ArrowBoundaryPainter: React.FC<ArrowBoundaryPainterProps> = ({
 
   const pathD = generatePath();
 
-  // Measure path length
   useEffect(() => {
     if (pathRef.current) {
       try {
@@ -83,7 +81,6 @@ export const ArrowBoundaryPainter: React.FC<ArrowBoundaryPainterProps> = ({
     }
   }, [width, height, shape, borderRadius]);
 
-  // Compute position and tangent angle for Arrow 1 along perimeter
   useEffect(() => {
     if (arrowPos) {
       setHeadPos(arrowPos);
@@ -121,8 +118,9 @@ export const ArrowBoundaryPainter: React.FC<ArrowBoundaryPainterProps> = ({
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
+          {/* Refined soft gold illumination filter */}
           <filter id={`glow-${filterId}`} x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -130,9 +128,9 @@ export const ArrowBoundaryPainter: React.FC<ArrowBoundaryPainterProps> = ({
           </filter>
 
           <linearGradient id={`grad-${filterId}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={params.color} stopOpacity="1" />
-            <stop offset="60%" stopColor={params.secondaryColor} stopOpacity="0.8" />
-            <stop offset="100%" stopColor={params.color} stopOpacity="1" />
+            <stop offset="0%" stopColor="#E5C98A" stopOpacity="1" />
+            <stop offset="50%" stopColor="#D6B36A" stopOpacity="1" />
+            <stop offset="100%" stopColor="#B99555" stopOpacity="0.9" />
           </linearGradient>
         </defs>
 
@@ -150,33 +148,32 @@ export const ArrowBoundaryPainter: React.FC<ArrowBoundaryPainterProps> = ({
           <path
             d={pathD}
             fill="none"
-            stroke="rgba(255, 255, 255, 0.08)"
+            stroke="rgba(214, 179, 106, 0.20)"
             strokeWidth="1"
           />
         )}
 
-        {/* Luminous Glow Stroke */}
-        {(isDrawing || isCompleted) && totalLength > 0 && (
+        {/* Soft Illumination Glow Stroke during live drawing */}
+        {isDrawing && totalLength > 0 && (
           <path
             d={pathD}
             fill="none"
-            stroke={params.glowColor}
-            strokeWidth={isCompleted ? 2 : 4}
+            stroke="rgba(214, 179, 106, 0.22)"
+            strokeWidth={3}
             strokeDasharray={totalLength}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
             filter={`url(#glow-${filterId})`}
-            opacity={isCompleted ? 0.4 : 0.85}
           />
         )}
 
         {/* Crisp Foreground Stroke */}
-        {(isDrawing || isCompleted) && totalLength > 0 && (
+        {isDrawing && totalLength > 0 && (
           <path
             d={pathD}
             fill="none"
             stroke={`url(#grad-${filterId})`}
-            strokeWidth={isCompleted ? 1.5 : 2.5}
+            strokeWidth={1.5}
             strokeDasharray={totalLength}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
@@ -189,19 +186,18 @@ export const ArrowBoundaryPainter: React.FC<ArrowBoundaryPainterProps> = ({
             transform={`translate(${headPos.x}, ${headPos.y}) rotate(${headPos.angle})`}
             className="transition-transform duration-75 ease-out"
           >
-            {/* Luminous Arrow Head Aura */}
-            <circle cx="0" cy="0" r="8" fill={params.glowColor} filter={`url(#glow-${filterId})`} />
+            {/* Soft Luminous Arrow Aura */}
+            <circle cx="0" cy="0" r="6" fill="rgba(214, 179, 106, 0.25)" />
 
-            {/* Futuristic Arrow Head */}
+            {/* Futuristic Metallic Arrow Head */}
             <polygon
-              points="-9,-7 9,0 -9,7 -4,0"
-              fill="#FFFFFF"
-              filter={`drop-shadow(0 0 6px ${params.color})`}
+              points="-8,-6 8,0 -8,6 -3,0"
+              fill="#F5F0E6"
+              filter="drop-shadow(0 0 5px #D6B36A)"
             />
 
-            {/* Glowing Core Dot */}
-            <circle cx="2" cy="0" r="2.5" fill={params.color} />
-            <circle cx="9" cy="0" r="1.5" fill="#FFFFFF" />
+            {/* Champagne Gold Tip */}
+            <circle cx="8" cy="0" r="1.5" fill="#D6B36A" />
           </g>
         )}
       </svg>

@@ -16,6 +16,7 @@ import gsap from 'gsap';
 import { generateArrowParams } from './RandomArrowGenerator';
 import { ArrowBoundaryPainter } from './ArrowBoundaryPainter';
 import { ConstructionProvider } from './ConstructionContext';
+import { ArrowTaskManager } from './ArrowTaskManager';
 
 export interface ConstructedSectionProps {
   id: string;
@@ -31,7 +32,7 @@ export interface ConstructedSectionProps {
 export const ConstructedSection: React.FC<ConstructedSectionProps> = ({
   id,
   children,
-  accentColor = '#00E5FF',
+  accentColor = '#D6B36A',
   borderRadius = 24,
   className = '',
   frameTitle,
@@ -59,11 +60,10 @@ export const ConstructedSection: React.FC<ConstructedSectionProps> = ({
 
     const update = () => {
       const rect = el.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        setDimensions({
-          width: Math.round(rect.width),
-          height: Math.round(rect.height),
-        });
+      const w = Math.round(rect.width || el.offsetWidth || 1100);
+      const h = Math.round(rect.height || el.offsetHeight || 600);
+      if (w > 0 && h > 0) {
+        setDimensions({ width: w, height: h });
       }
     };
 
@@ -117,81 +117,57 @@ export const ConstructedSection: React.FC<ConstructedSectionProps> = ({
   const startConstruction = useCallback(() => {
     if (stage !== 'hidden') return;
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReducedMotion) {
+    if (ArrowTaskManager.isTaskCompleted(`section-${id}`)) {
       setStage('active');
       setBoundaryProgress(1);
       if (onComplete) onComplete();
       return;
     }
 
-    const { width, height } = dimensions;
-    const r = Math.min(borderRadius, width / 2 || 20, height / 2 || 20);
-    const startX = r;
-    const startY = 0;
-
-    const entrance = getOffscreenCoord(arrowParams.entryEdge);
-    const exit = getOffscreenCoord(arrowParams.exitEdge);
-
-    const tl = gsap.timeline({
+    ArrowTaskManager.registerTask({
+      id: `section-${id}`,
+      targetId: id,
+      type: 'boundary',
+      getBounds: () => (containerRef.current ? containerRef.current.getBoundingClientRect() : null),
+      borderRadius,
+      priority: 1000,
+      status: 'pending',
+      assignedArrowId: null,
+      onProgress: (p) => {
+        setBoundaryProgress(p);
+        if (p > 0 && p < 1) {
+          setStage('drawing');
+        } else if (p >= 1) {
+          setStage('active');
+        }
+      },
       onComplete: () => {
         setStage('active');
-        setArrowPos(null);
+        setBoundaryProgress(1);
         if (onComplete) onComplete();
       },
     });
 
-    // 1. Entrance: Arrow flies from off-screen to container boundary
-    tl.add(() => setStage('entrance'));
-    const arrowObj = { x: entrance.x, y: entrance.y };
-    tl.to(arrowObj, {
-      x: startX,
-      y: startY,
-      duration: arrowParams.entryDuration,
-      ease: 'power2.out',
-      onUpdate: () => {
-        const angle = Math.atan2(startY - arrowObj.y, startX - arrowObj.x) * (180 / Math.PI);
-        setArrowPos({ x: arrowObj.x, y: arrowObj.y, angle });
-      },
-    });
+    // Safety watchdog: Guarantee section activation within 2.5s
+    const safety = setTimeout(() => {
+      setStage('active');
+      setBoundaryProgress(1);
+      if (onComplete) onComplete();
+    }, 2500);
 
-    // 2. Drawing: Arrow physically traces outer container perimeter
-    tl.add(() => {
-      setStage('drawing');
-      setArrowPos(null);
-    });
+    return () => clearTimeout(safety);
+  }, [stage, id, borderRadius, onComplete]);
 
-    const drawObj = { p: 0 };
-    tl.to(drawObj, {
-      p: 1,
-      duration: arrowParams.drawDuration,
-      ease: 'power1.inOut',
-      onUpdate: () => {
-        setBoundaryProgress(drawObj.p);
-      },
-    });
-
-    // 3. Exit: Arrow accelerates and leaves the viewport
-    tl.add(() => setStage('exit'));
-    const exitObj = { x: startX, y: startY };
-    tl.to(exitObj, {
-      x: exit.x,
-      y: exit.y,
-      duration: arrowParams.exitDuration,
-      ease: 'power3.in',
-      onUpdate: () => {
-        const angle = Math.atan2(exit.y - exitObj.y, exit.x - exitObj.x) * (180 / Math.PI);
-        setArrowPos({ x: exitObj.x, y: exitObj.y, angle });
-      },
-    });
-  }, [stage, dimensions, borderRadius, arrowParams, getOffscreenCoord, onComplete]);
-
-  // Listen for trigger event
+  // Listen for trigger event or viewport intersection
   useEffect(() => {
     const handleTrigger = (e: any) => {
+      if (e?.type === 'construct-all-regions') {
+        setStage('active');
+        setBoundaryProgress(1);
+        setArrowPos(null);
+        if (onComplete) onComplete();
+        return;
+      }
       if (e?.detail?.id === id || e?.detail?.sectionId === id || e?.detail?.id === 'all') {
         startConstruction();
       }
@@ -201,12 +177,30 @@ export const ConstructedSection: React.FC<ConstructedSectionProps> = ({
     window.addEventListener(`construct-section-${id}` as any, handleTrigger);
     window.addEventListener('construct-all-regions' as any, handleTrigger);
 
+    // Also observe intersection with viewport
+    const el = containerRef.current;
+    let observer: IntersectionObserver | null = null;
+    if (el) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && stage === 'hidden' && dimensions.width > 0) {
+              startConstruction();
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(el);
+    }
+
     return () => {
       window.removeEventListener(`start-section-${id}` as any, handleTrigger);
       window.removeEventListener(`construct-section-${id}` as any, handleTrigger);
       window.removeEventListener('construct-all-regions' as any, handleTrigger);
+      if (observer) observer.disconnect();
     };
-  }, [id, startConstruction]);
+  }, [id, stage, dimensions.width, startConstruction]);
 
   const isBoundaryDrawing = stage === 'drawing';
   const isBoundaryDrawn = ['exit', 'active'].includes(stage);
@@ -246,11 +240,11 @@ export const ConstructedSection: React.FC<ConstructedSectionProps> = ({
               <circle cx="0" cy="0" r="10" fill={arrowParams.glowColor} />
               <polygon
                 points="-10,-7 10,0 -10,7 -4,0"
-                fill="#FFFFFF"
+                fill="#F5F0E6"
                 filter={`drop-shadow(0 0 6px ${arrowParams.color})`}
               />
               <circle cx="2" cy="0" r="2.5" fill={arrowParams.color} />
-              <circle cx="10" cy="0" r="1.5" fill="#FFFFFF" />
+              <circle cx="10" cy="0" r="1.5" fill="#F5F0E6" />
             </g>
           </svg>
         </div>
@@ -258,8 +252,8 @@ export const ConstructedSection: React.FC<ConstructedSectionProps> = ({
 
       {/* Frame Header Telemetry Badge */}
       {frameTitle && isBoundaryDrawn && (
-        <div className="absolute -top-3 left-6 px-3 py-0.5 rounded-full bg-[#05060A] border border-white/10 text-[10px] font-mono text-slate-400 z-30 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-pulse" />
+        <div className="absolute -top-3 left-6 px-3 py-0.5 rounded-full bg-[#14120F] border border-[rgba(214,179,106,0.20)] text-[10px] font-mono text-[#B9B2A5] z-30 flex items-center gap-2 shadow-md">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#D6B36A] animate-pulse" />
           <span>{frameTitle}</span>
         </div>
       )}

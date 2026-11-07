@@ -24,8 +24,8 @@ export interface ArrowPathProps {
 export const ArrowPath: React.FC<ArrowPathProps> = ({
   id,
   d,
-  color = '#00E5FF',
-  glowColor = 'rgba(0, 229, 255, 0.5)',
+  color = '#D6B36A',
+  glowColor = 'rgba(214, 179, 106, 0.35)',
   strokeWidth = 1.5,
   duration = 1.6,
   delay = 0,
@@ -185,8 +185,8 @@ export const ArrowPath: React.FC<ArrowPathProps> = ({
         <circle
           ref={particleRef}
           r={particleSize}
-          fill="#FFFFFF"
-          filter="drop-shadow(0 0 6px #00E5FF)"
+          fill="#F5F0E6"
+          filter="drop-shadow(0 0 6px #D6B36A)"
         />
       )}
 

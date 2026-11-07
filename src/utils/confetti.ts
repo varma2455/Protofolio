@@ -30,7 +30,7 @@ export const triggerConfetti = () => {
     life: number;
   }> = [];
 
-  const colors = ['#00E5FF', '#6C63FF', '#A855F7', '#10B981', '#FFFFFF', '#F59E0B'];
+  const colors = ['#D6B36A', '#B99555', '#E5C98A', '#F5F0E6', '#211D17'];
 
   for (let i = 0; i < 75; i++) {
     particles.push({

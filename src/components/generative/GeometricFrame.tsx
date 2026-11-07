@@ -14,8 +14,8 @@ export interface GeometricFrameProps {
 export const GeometricFrame: React.FC<GeometricFrameProps> = ({
   children,
   variant = 'hud-bracket',
-  glowColor = '#00E5FF',
-  borderColor = 'rgba(255, 255, 255, 0.1)',
+  glowColor = '#D6B36A',
+  borderColor = 'rgba(214, 179, 106, 0.20)',
   className = '',
   coordinates,
   cornerCrosshairs = true,

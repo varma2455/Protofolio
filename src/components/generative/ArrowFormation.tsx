@@ -26,8 +26,8 @@ export const ArrowFormation: React.FC<ArrowFormationProps> = ({
   viewBox = '0 0 1000 600',
   mode = 'circuit-network',
   customArrows,
-  colors = ['#00E5FF', '#6C63FF', '#A855F7', '#38BDF8'],
-  glowColors = ['rgba(0, 229, 255, 0.4)', 'rgba(108, 99, 255, 0.4)', 'rgba(168, 85, 247, 0.4)'],
+  colors = ['#D6B36A', '#B99555', '#E5C98A', '#C49B4B'],
+  glowColors = ['rgba(214, 179, 106, 0.25)', 'rgba(185, 149, 85, 0.22)', 'rgba(229, 201, 138, 0.22)'],
   duration = 1.4,
   stagger = 0.22,
   className = '',
@@ -249,7 +249,7 @@ export const ArrowFormation: React.FC<ArrowFormationProps> = ({
             cx={arrow.startX}
             cy={arrow.startY}
             r={2.5}
-            fill="#FFFFFF"
+            fill="#F5F0E6"
             opacity={0.4}
           />
           <circle
@@ -257,7 +257,7 @@ export const ArrowFormation: React.FC<ArrowFormationProps> = ({
             cy={arrow.endY}
             r={3.5}
             fill={arrow.color}
-            filter="drop-shadow(0 0 5px #00E5FF)"
+            filter="drop-shadow(0 0 5px #D6B36A)"
             style={{
               animation: `pulse-subtle ${2 + (idx % 3)}s infinite ease-in-out`,
             }}

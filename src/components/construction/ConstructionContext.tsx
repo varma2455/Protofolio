@@ -49,7 +49,7 @@ export const ConstructionProvider: React.FC<ConstructionProviderProps> = ({
   onAllChildrenComplete,
   children,
 }) => {
-  const [activeChildIndex, setActiveChildIndex] = useState<number>(0);
+  const [activeChildIndex, setActiveChildIndex] = useState<number>(instantMode ? 999 : 0);
   const childrenListRef = useRef<string[]>([]);
 
   const registerChild = useCallback((childId: string) => {
@@ -63,7 +63,7 @@ export const ConstructionProvider: React.FC<ConstructionProviderProps> = ({
   const notifyChildComplete = useCallback((childId: string, index: number) => {
     setTimeout(() => {
       setActiveChildIndex((prev) => {
-        const nextIndex = prev + 1;
+        const nextIndex = Math.max(prev, index + 1);
         if (nextIndex >= childrenListRef.current.length) {
           if (onAllChildrenComplete) onAllChildrenComplete();
         }
@@ -71,6 +71,34 @@ export const ConstructionProvider: React.FC<ConstructionProviderProps> = ({
       });
     }, staggerDelay);
   }, [staggerDelay, onAllChildrenComplete]);
+
+  // Global instant reveal listener
+  React.useEffect(() => {
+    const handleInstant = () => {
+      setActiveChildIndex(999);
+      if (onAllChildrenComplete) onAllChildrenComplete();
+    };
+    window.addEventListener('construct-all-regions', handleInstant);
+    return () => window.removeEventListener('construct-all-regions', handleInstant);
+  }, [onAllChildrenComplete]);
+
+  // Safety watchdog: Once parent is active, ensure all children eventually construct
+  React.useEffect(() => {
+    if (!isParentActive) return;
+
+    const watchdog = setTimeout(() => {
+      setActiveChildIndex((prev) => {
+        const total = childrenListRef.current.length;
+        if (prev < total) {
+          if (onAllChildrenComplete) onAllChildrenComplete();
+          return total;
+        }
+        return prev;
+      });
+    }, 3200);
+
+    return () => clearTimeout(watchdog);
+  }, [isParentActive, onAllChildrenComplete]);
 
   return (
     <ConstructionContext.Provider

@@ -4,15 +4,19 @@ import {
   Database, 
   Server, 
   Terminal, 
-  Code2, 
-  ArrowRight, 
-  Cpu, 
-  Sparkles,
-  Repeat
+  ArrowRight 
 } from 'lucide-react';
 import { MongoDbIcon, ExpressIcon, ReactIcon, NodeIcon } from './Icons';
-import { ContentConstructionRegion } from './construction/ContentConstructionRegion';
-import { SectionRevealTimeline } from './construction/SectionRevealTimeline';
+import { 
+  ConstructedSection, 
+  ConstructedContainer, 
+  ConstructedCard, 
+  ConstructedIcon, 
+  ConstructedHeading, 
+  ConstructedDescription, 
+  ConstructedBadge, 
+  ConstructedButton 
+} from './construction';
 
 interface StackTier {
   id: string;
@@ -20,9 +24,7 @@ interface StackTier {
   name: string;
   role: string;
   color: string;
-  bgGlow: string;
   borderColor: string;
-  textColor: string;
   icon: React.FC<{ size?: number; className?: string }>;
   tagline: string;
   description: string;
@@ -40,10 +42,8 @@ export const TechStack: React.FC = () => {
       letter: 'R',
       name: 'React.js',
       role: 'Client Presentation & Interactive State Layer',
-      color: '#00E5FF',
-      bgGlow: 'rgba(0, 229, 255, 0.15)',
-      borderColor: 'border-[#00E5FF]/40',
-      textColor: 'text-[#00E5FF]',
+      color: '#D6B36A',
+      borderColor: 'border-[#D6B36A]/40',
       icon: ReactIcon,
       tagline: 'Component-driven reactive user interfaces with sub-second rendering.',
       description:
@@ -52,7 +52,6 @@ export const TechStack: React.FC = () => {
         'Single Page Application (SPA) routing with dynamic segment guards',
         'State persistence across browser refreshes via Context API and Storage APIs',
         'Custom hooks for throttled real-time search, cart mutations, and socket listeners',
-        'Virtual DOM reconciliation optimized with React.memo and useMemo',
       ],
       codeHighlight: `// Contextual Cart & Auth Hook
 export const useCartContext = () => {
@@ -60,21 +59,15 @@ export const useCartContext = () => {
   if (!context) throw new Error('CartContext must be within Provider');
   return context;
 };`,
-      responsibilities: [
-        'Declarative UI state mapping',
-        'Client-side input sanitation',
-        'Real-time WebSocket event listeners',
-      ],
+      responsibilities: ['Declarative UI state mapping', 'Client-side input sanitation', 'Real-time WebSocket event listeners'],
     },
     {
       id: 'node',
       letter: 'N',
       name: 'Node.js',
       role: 'Asynchronous Event-Driven Runtime',
-      color: '#10B981',
-      bgGlow: 'rgba(16, 185, 129, 0.15)',
-      borderColor: 'border-emerald-500/40',
-      textColor: 'text-emerald-400',
+      color: '#B99555',
+      borderColor: 'border-[#B99555]/40',
       icon: NodeIcon,
       tagline: 'High-throughput non-blocking I/O event loops powering concurrency.',
       description:
@@ -83,28 +76,21 @@ export const useCartContext = () => {
         'Non-blocking event-driven concurrency for I/O bound web services',
         'Cluster module scalability for multi-core hardware saturation',
         'Stream-based memory management for large file serialization',
-        'Native asynchronous error handling and graceful shutdown hooks',
       ],
       codeHighlight: `// Socket.io Runtime Server Instance
 const io = new Server(httpServer, {
   cors: { origin: process.env.CLIENT_URL, credentials: true },
   pingTimeout: 60000,
 });`,
-      responsibilities: [
-        'TCP & WebSocket lifecycle management',
-        'Environment config orchestration',
-        'Stream processing & Buffer pipelines',
-      ],
+      responsibilities: ['TCP & WebSocket lifecycle management', 'Environment config orchestration', 'Stream processing & Buffer pipelines'],
     },
     {
       id: 'express',
       letter: 'E',
       name: 'Express.js',
       role: 'Decoupled Middleware & REST Routing Layer',
-      color: '#F59E0B',
-      bgGlow: 'rgba(245, 158, 11, 0.15)',
-      borderColor: 'border-amber-500/40',
-      textColor: 'text-amber-400',
+      color: '#E5C98A',
+      borderColor: 'border-[#E5C98A]/40',
       icon: ExpressIcon,
       tagline: 'Minimalist robust HTTP server pipeline with custom middleware chains.',
       description:
@@ -113,7 +99,6 @@ const io = new Server(httpServer, {
         'Modular route segmenting with Express Router and nested endpoints',
         'JWT bearer authorization middleware verifying cryptographically signed tokens',
         'Rate limiting guards (express-rate-limit) and Helmet security headers',
-        'Standardized error interceptor forwarding unified JSON exceptions',
       ],
       codeHighlight: `// Bearer Token Validation Middleware
 export const authenticate = (req, res, next) => {
@@ -122,21 +107,15 @@ export const authenticate = (req, res, next) => {
   req.user = jwt.verify(token, process.env.JWT_SECRET);
   next();
 };`,
-      responsibilities: [
-        'CORS policy configuration',
-        'Route parameter validation',
-        'Authentication and Role guards',
-      ],
+      responsibilities: ['CORS policy configuration', 'Route parameter validation', 'Authentication and Role guards'],
     },
     {
       id: 'mongo',
       letter: 'M',
       name: 'MongoDB',
       role: 'Flexible Document Database & Aggregation Engine',
-      color: '#34D399',
-      bgGlow: 'rgba(52, 211, 153, 0.15)',
-      borderColor: 'border-emerald-400/40',
-      textColor: 'text-emerald-400',
+      color: '#D6B36A',
+      borderColor: 'border-[#D6B36A]/40',
       icon: MongoDbIcon,
       tagline: 'Schema-rich NoSQL persistence engineered for rapid hierarchical JSON.',
       description:
@@ -145,7 +124,6 @@ export const authenticate = (req, res, next) => {
         'Complex multi-stage aggregation pipelines for analytics and order totals',
         'Compound indexing strategies ensuring indexed index scans',
         'Referenced models with Mongoose .populate() for relationship integrity',
-        'Atlas cloud clustering with automated geo-redundant backups',
       ],
       codeHighlight: `// Mongoose Schema with Pre-Save Encryption
 userSchema.pre('save', async function (next) {
@@ -153,208 +131,204 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });`,
-      responsibilities: [
-        'Document schema validation',
-        'Data indexing & query optimization',
-        'ACID transactions across multi-documents',
-      ],
+      responsibilities: ['Document schema validation', 'Data indexing & query optimization', 'ACID transactions across multi-documents'],
     },
   ];
 
   const activeTier = tiers.find((t) => t.id === activeTierId) || tiers[0];
-  const regionSequence = ['tech-header', 'tech-tabs', 'tech-active-card', 'tech-flow'];
 
   return (
-    <section id="tech-stack" className="relative py-28 bg-[#05060A] overflow-hidden">
+    <section id="tech-stack" className="relative py-28 bg-[#0C0B09] overflow-hidden">
       {/* Background Cyber Grid */}
       <div className="absolute inset-0 bg-grid-cyber opacity-20 pointer-events-none" />
-      <div className="ambient-light-orb top-1/4 right-0 w-[500px] h-[500px] bg-[#00E5FF]/08" />
-      <div className="ambient-light-orb bottom-10 left-10 w-[450px] h-[450px] bg-[#6C63FF]/10" />
+      <div className="ambient-light-orb top-1/4 right-0 w-[500px] h-[500px] bg-[#D6B36A]/04" />
+      <div className="ambient-light-orb bottom-10 left-10 w-[450px] h-[450px] bg-[#B99555]/05" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <SectionRevealTimeline sectionId="tech-stack" regionIds={regionSequence}>
-          
-          {/* 1. Section Header */}
-          <ContentConstructionRegion
-            id="tech-header"
-            shape="chamfer"
-            borderRadius={12}
-            accentColor="#00E5FF"
-            priority={1}
-            className="mb-14 max-w-2xl"
-          >
-            <div className="p-4 sm:p-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-[#00E5FF] mb-3">
-                <Layers size={13} />
-                <span>SECTION 02 // ARCHITECTURE MATRIX</span>
-              </div>
-              <h2 className="text-3xl sm:text-5xl font-heading font-extrabold text-white tracking-tight">
-                The <span className="text-gradient-cyan-blue">MERN Stack</span> Ecosystem
-              </h2>
-              <p className="mt-3 text-slate-400 text-sm sm:text-base font-sans">
-                Each layer operates with a dedicated responsibility, linked by type-safe contracts and JSON serialization.
-              </p>
+        
+        {/* LEVEL 0: Outer Section Container */}
+        <ConstructedSection
+          id="tech-stack"
+          accentColor="#D6B36A"
+          borderRadius={24}
+          frameTitle="SYS://MERN_ARCHITECTURE_MATRIX"
+          className="p-6 sm:p-10 border border-[rgba(214,179,106,0.20)] bg-[#14120F]/60 backdrop-blur-sm"
+        >
+          {/* Section Header */}
+          <div className="mb-12 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#211D17] border border-[rgba(214,179,106,0.20)] text-xs font-mono text-[#D6B36A] mb-3">
+              <Layers size={13} />
+              <span>SECTION 02 // ARCHITECTURE MATRIX</span>
             </div>
-          </ContentConstructionRegion>
+            <h2 className="text-3xl sm:text-5xl font-heading font-extrabold text-[#F5F0E6] tracking-tight">
+              The <span className="text-gradient-gold">MERN Stack</span> Ecosystem
+            </h2>
+            <p className="mt-3 text-[#B9B2A5] text-sm sm:text-base font-sans">
+              Each layer operates with a dedicated responsibility, linked by type-safe contracts and JSON serialization.
+            </p>
+          </div>
 
-          {/* 2. Four Layer Selection Tabs */}
-          <ContentConstructionRegion
-            id="tech-tabs"
-            shape="rounded"
-            borderRadius={16}
-            accentColor="#6C63FF"
-            priority={2}
-            className="mb-8 w-full"
-          >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3">
-              {tiers.map((tier) => {
-                const Icon = tier.icon;
-                const isActive = tier.id === activeTierId;
-                return (
-                  <button
-                    key={tier.id}
-                    type="button"
-                    onClick={() => setActiveTierId(tier.id)}
-                    className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all duration-300 cursor-pointer ${
-                      isActive
-                        ? `bg-white/[0.08] ${tier.borderColor} shadow-lg shadow-black/40`
-                        : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04] hover:border-white/10'
-                    }`}
-                  >
-                    <div
-                      className={`w-9 h-9 rounded-lg flex items-center justify-center font-heading font-black text-sm ${
-                        isActive
-                          ? 'bg-gradient-to-br from-white/20 to-white/05 text-white'
-                          : 'bg-white/[0.04] text-slate-400'
-                      }`}
-                    >
-                      <Icon size={18} />
-                    </div>
-                    <div>
-                      <span className={`block font-heading font-bold text-sm ${isActive ? 'text-white' : 'text-slate-300'}`}>
-                        {tier.name}
-                      </span>
-                      <span className="block text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+          {/* LEVEL 1: Four Nested Inner Cards constructed one by one */}
+          <ConstructedContainer id="tech-cards-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            {tiers.map((tier) => {
+              const Icon = tier.icon;
+              const isActive = tier.id === activeTierId;
+
+              return (
+                <ConstructedCard
+                  key={tier.id}
+                  id={`tech-card-${tier.id}`}
+                  accentColor={tier.color}
+                  borderRadius={18}
+                  className="p-6 flex flex-col justify-between cursor-pointer"
+                >
+                  <div onClick={() => setActiveTierId(tier.id)}>
+                    {/* Top Row: Icon container + Letter Badge */}
+                    <div className="flex items-center justify-between pb-4 border-b border-[rgba(214,179,106,0.20)] mb-4">
+                      {/* LEVEL 2: Nested Icon */}
+                      <ConstructedIcon
+                        id={`tech-icon-${tier.id}`}
+                        icon={Icon}
+                        color={tier.color}
+                        containerSize={42}
+                      />
+                      <span className="text-xs font-mono font-bold text-[#B9B2A5] px-2 py-0.5 rounded bg-[#211D17] border border-[rgba(214,179,106,0.20)]">
                         {tier.letter} // TIER
                       </span>
                     </div>
-                  </button>
-                );
-              })}
-            </div>
-          </ContentConstructionRegion>
 
-          {/* 3. Detailed Active Tier Card */}
-          <ContentConstructionRegion
-            id="tech-active-card"
-            shape="rounded"
-            borderRadius={20}
-            accentColor={activeTier.color}
-            priority={3}
-            className="w-full mb-8"
-          >
-            <div className="p-6 sm:p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                {/* Left Overview */}
-                <div className="lg:col-span-7 space-y-5">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-heading font-extrabold text-lg text-white"
-                      style={{ backgroundColor: activeTier.color }}
+                    {/* LEVEL 2: Heading */}
+                    <ConstructedHeading
+                      id={`tech-heading-${tier.id}`}
+                      as="h3"
+                      accentColor={tier.color}
+                      className="text-lg text-[#F5F0E6] mb-1"
                     >
-                      {activeTier.letter}
+                      {tier.name}
+                    </ConstructedHeading>
+
+                    <span className="text-[11px] font-mono text-[#B9B2A5] block mb-3">
+                      {tier.role}
                     </span>
-                    <div>
-                      <h3 className="font-heading font-extrabold text-2xl text-white">
-                        {activeTier.name}
-                      </h3>
-                      <p className="font-mono text-xs text-slate-400">
-                        {activeTier.role}
-                      </p>
-                    </div>
-                  </div>
 
-                  <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
-                    {activeTier.description}
-                  </p>
+                    {/* LEVEL 2: Description */}
+                    <ConstructedDescription
+                      id={`tech-desc-${tier.id}`}
+                      accentColor={tier.color}
+                      className="mb-4 text-xs line-clamp-3 text-[#B9B2A5]"
+                    >
+                      {tier.tagline}
+                    </ConstructedDescription>
 
-                  <div className="space-y-2 pt-2">
-                    <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block">
-                      Architectural Capabilities:
-                    </span>
-                    <ul className="space-y-1.5 font-sans text-xs sm:text-sm text-slate-300">
-                      {activeTier.keyFeatures.map((feat, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <span className="text-[#00E5FF] font-mono mt-0.5">&bull;</span>
-                          <span>{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Right Code Highlight */}
-                <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-4">
-                  <div className="rounded-xl bg-[#090D16] border border-white/[0.08] p-4 font-mono text-xs overflow-x-auto text-slate-300 shadow-xl">
-                    <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/[0.06] text-[10px] text-slate-500">
-                      <span>SYNTAX HIGHLIGHT // CODE BASE</span>
-                      <span className="text-emerald-400">ES6+ TS</span>
-                    </div>
-                    <pre className="text-slate-300 leading-relaxed">
-                      <code>{activeTier.codeHighlight}</code>
-                    </pre>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] font-mono text-xs space-y-2">
-                    <span className="text-[10px] text-slate-400 uppercase tracking-widest block">
-                      Primary Responsibilities:
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {activeTier.responsibilities.map((r, i) => (
-                        <span
-                          key={i}
-                          className="px-2.5 py-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-slate-300 text-[11px]"
+                    {/* LEVEL 2: Micro Badges */}
+                    <div className="flex flex-wrap gap-1.5 pt-2">
+                      {tier.responsibilities.slice(0, 2).map((resp, rIdx) => (
+                        <ConstructedBadge
+                          key={rIdx}
+                          id={`tech-badge-${tier.id}-${rIdx}`}
+                          color={tier.color}
                         >
-                          {r}
-                        </span>
+                          {resp}
+                        </ConstructedBadge>
                       ))}
                     </div>
                   </div>
+
+                  {/* LEVEL 2: Action Button */}
+                  <div className="pt-4 mt-4 border-t border-[rgba(214,179,106,0.20)] flex items-center justify-between">
+                    <ConstructedButton
+                      id={`tech-btn-${tier.id}`}
+                      onClick={() => setActiveTierId(tier.id)}
+                      accentColor={tier.color}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-mono ${
+                        isActive
+                          ? 'bg-[#D6B36A]/20 text-[#D6B36A] border border-[#D6B36A]/40'
+                          : 'bg-[#211D17] text-[#F5F0E6] hover:text-white border border-[rgba(214,179,106,0.20)]'
+                      }`}
+                    >
+                      <span>{isActive ? 'Active Blueprint' : 'Inspect Details'}</span>
+                    </ConstructedButton>
+
+                    <ArrowRight size={14} className="text-[#B9B2A5]" />
+                  </div>
+                </ConstructedCard>
+              );
+            })}
+          </ConstructedContainer>
+
+          {/* LEVEL 1: Active Detail Inspector Card */}
+          <ConstructedCard
+            id={`tech-detail-${activeTier.id}`}
+            accentColor={activeTier.color}
+            borderRadius={20}
+            className="p-6 sm:p-8"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              
+              <div className="lg:col-span-7 space-y-4">
+                <div className="flex items-center gap-3">
+                  <ConstructedIcon
+                    id={`tech-detail-icon-${activeTier.id}`}
+                    icon={activeTier.icon}
+                    color={activeTier.color}
+                    containerSize={46}
+                  />
+                  <div>
+                    <ConstructedHeading
+                      id={`tech-detail-head-${activeTier.id}`}
+                      as="h3"
+                      accentColor={activeTier.color}
+                      className="text-2xl text-[#F5F0E6]"
+                    >
+                      {activeTier.name} Deep Architecture
+                    </ConstructedHeading>
+                    <span className="text-xs font-mono text-[#B9B2A5]">
+                      {activeTier.role}
+                    </span>
+                  </div>
                 </div>
 
-              </div>
-            </div>
-          </ContentConstructionRegion>
+                <ConstructedDescription
+                  id={`tech-detail-desc-${activeTier.id}`}
+                  accentColor={activeTier.color}
+                  className="text-sm sm:text-base text-[#B9B2A5]"
+                >
+                  {activeTier.description}
+                </ConstructedDescription>
 
-          {/* 4. Full-Duplex Architectural Flow Banner */}
-          <ContentConstructionRegion
-            id="tech-flow"
-            shape="chamfer"
-            borderRadius={16}
-            accentColor="#10B981"
-            priority={4}
-            className="w-full"
-          >
-            <div className="p-5 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-slate-300">
-              <div className="flex items-center gap-3">
-                <Repeat size={16} className="text-[#00E5FF] animate-spin" style={{ animationDuration: '6s' }} />
-                <span>
-                  <strong>Full-Duplex Pipeline:</strong> React Client &harr; Axios/Socket.io &harr; Express Gateway &harr; MongoDB Documents
-                </span>
+                <div className="space-y-2 pt-2">
+                  <span className="text-xs font-mono text-[#B9B2A5] uppercase tracking-wider block">
+                    Verified Capabilities:
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {activeTier.keyFeatures.map((feat, fIdx) => (
+                      <ConstructedBadge
+                        key={fIdx}
+                        id={`tech-feat-${activeTier.id}-${fIdx}`}
+                        color={activeTier.color}
+                      >
+                        &bull; {feat}
+                      </ConstructedBadge>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-slate-400 text-[11px]">
-                <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  JWT Secured
-                </span>
-                <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                  WebSocket Ready
-                </span>
-              </div>
-            </div>
-          </ContentConstructionRegion>
 
-        </SectionRevealTimeline>
+              {/* Code Sandbox */}
+              <div className="lg:col-span-5 rounded-xl bg-[#14120F] border border-[rgba(214,179,106,0.20)] p-4 font-mono text-xs overflow-x-auto text-[#F5F0E6] shadow-xl">
+                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[rgba(214,179,106,0.20)] text-[10px] text-[#B9B2A5]">
+                  <span>PRODUCTION SYNTAX // {activeTier.name}</span>
+                  <span className="text-[#D6B36A]">ES6+ TS</span>
+                </div>
+                <pre className="text-[#F5F0E6] leading-relaxed">
+                  <code>{activeTier.codeHighlight}</code>
+                </pre>
+              </div>
+
+            </div>
+          </ConstructedCard>
+
+        </ConstructedSection>
       </div>
     </section>
   );

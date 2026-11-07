@@ -21,7 +21,7 @@ export const PaintRevealText: React.FC<PaintRevealTextProps> = ({
   progress,
   isPainting,
   isRevealed,
-  accentColor = '#00E5FF',
+  accentColor = '#D6B36A',
   className = '',
 }) => {
   // If permanently revealed, clear clip path and enable full pointer interaction

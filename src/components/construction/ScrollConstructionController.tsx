@@ -12,6 +12,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { InitialScrollPrompt } from './InitialScrollPrompt';
 import { Paintbrush, Eye } from 'lucide-react';
+import { GlobalArrowPool } from './GlobalArrowPool';
+import { ArrowTaskManager } from './ArrowTaskManager';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,39 +41,33 @@ export const ScrollConstructionController: React.FC<ScrollConstructionController
   // Trigger initiation of the construction experience
   const initiateExperience = useCallback(() => {
     setHasStartedScroll(true);
+    GlobalArrowPool.setStarted(true);
 
-    // Trigger hero section sequence
+    // Trigger hero section sequence immediately
+    window.dispatchEvent(
+      new CustomEvent('start-section-hero', {
+        detail: { sectionId: 'hero' },
+      })
+    );
+
+    // Refresh GSAP triggers after state update
     setTimeout(() => {
-      window.dispatchEvent(
-        new CustomEvent('start-section-hero', {
-          detail: { sectionId: 'hero' },
-        })
-      );
-
-      // Trigger the very first hero elements
-      window.dispatchEvent(
-        new CustomEvent('construct-region-hero-badge', {
-          detail: { id: 'hero-badge' },
-        })
-      );
-      setTimeout(() => {
-        window.dispatchEvent(
-          new CustomEvent('construct-region-hero-title', {
-            detail: { id: 'hero-title' },
-          })
-        );
-      }, 300);
-    }, 150);
+      ScrollTrigger.refresh();
+    }, 200);
   }, []);
 
-  // Listen for initial user interaction (wheel, touch, key, scroll)
+  // Listen for initial user interaction (wheel, touch, key, scroll) or auto-initiate
   useEffect(() => {
     if (hasStartedScroll) return;
 
-    const handleFirstScroll = (e: Event) => {
-      if (!hasStartedScroll) {
-        initiateExperience();
-      }
+    // Requirement 3: Start with short cinematic introduction, then automatically reveal
+    const autoRevealTimer = setTimeout(() => {
+      initiateExperience();
+    }, 1200);
+
+    const handleFirstScroll = () => {
+      clearTimeout(autoRevealTimer);
+      initiateExperience();
     };
 
     window.addEventListener('wheel', handleFirstScroll, { passive: true, once: true });
@@ -81,6 +77,7 @@ export const ScrollConstructionController: React.FC<ScrollConstructionController
     const handleAnchorClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('a[href^="#"]');
       if (target) {
+        clearTimeout(autoRevealTimer);
         initiateExperience();
       }
     };
@@ -88,12 +85,14 @@ export const ScrollConstructionController: React.FC<ScrollConstructionController
     
     const handleKeyDown = (e: KeyboardEvent) => {
       if (['ArrowDown', 'ArrowUp', 'PageDown', 'Space'].includes(e.code)) {
+        clearTimeout(autoRevealTimer);
         initiateExperience();
       }
     };
     window.addEventListener('keydown', handleKeyDown, { once: true });
 
     return () => {
+      clearTimeout(autoRevealTimer);
       window.removeEventListener('wheel', handleFirstScroll);
       window.removeEventListener('touchmove', handleFirstScroll);
       window.removeEventListener('scroll', handleFirstScroll);
@@ -133,7 +132,7 @@ export const ScrollConstructionController: React.FC<ScrollConstructionController
     const regionEls = document.querySelectorAll('[data-construction-id]');
     regionEls.forEach((el) => observer.observe(el));
 
-    // ScrollTriggers for major section milestones
+    // ScrollTriggers for major section milestones (enter & enterBack)
     const triggers: ScrollTrigger[] = [];
 
     sections.forEach((sectionId) => {
@@ -142,8 +141,15 @@ export const ScrollConstructionController: React.FC<ScrollConstructionController
 
       const trigger = ScrollTrigger.create({
         trigger: sectionEl,
-        start: 'top 80%',
+        start: 'top 85%',
         onEnter: () => {
+          window.dispatchEvent(
+            new CustomEvent(`start-section-${sectionId}`, {
+              detail: { sectionId },
+            })
+          );
+        },
+        onEnterBack: () => {
           window.dispatchEvent(
             new CustomEvent(`start-section-${sectionId}`, {
               detail: { sectionId },
@@ -166,9 +172,12 @@ export const ScrollConstructionController: React.FC<ScrollConstructionController
     if (!isInstantMode) {
       setIsInstantMode(true);
       setHasStartedScroll(true);
+      GlobalArrowPool.setStarted(true);
+      ArrowTaskManager.triggerInstantReveal();
       window.dispatchEvent(new CustomEvent('construct-all-regions'));
     } else {
       setIsInstantMode(false);
+      ArrowTaskManager.resetInstantReveal();
       window.location.reload();
     }
   };
@@ -187,17 +196,17 @@ export const ScrollConstructionController: React.FC<ScrollConstructionController
           <button
             type="button"
             onClick={toggleInstantMode}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/10 bg-[#0B0F19]/90 backdrop-blur-md text-[11px] font-mono text-slate-300 hover:text-white hover:border-[#00E5FF]/40 transition-all duration-200 shadow-xl cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-full border border-[rgba(214,179,106,0.20)] bg-[#211D17]/90 backdrop-blur-md text-[11px] font-mono text-[#F5F0E6] hover:border-[#D6B36A]/50 transition-all duration-200 shadow-xl cursor-pointer"
             title="Toggle between live arrow painting and instant reveal"
           >
             {isInstantMode ? (
               <>
-                <Paintbrush size={13} className="text-[#00E5FF]" />
+                <Paintbrush size={13} className="text-[#D6B36A]" />
                 <span>Re-enable Arrow Painting</span>
               </>
             ) : (
               <>
-                <Eye size={13} className="text-purple-400" />
+                <Eye size={13} className="text-[#B99555]" />
                 <span>Instant Reveal Mode</span>
               </>
             )}

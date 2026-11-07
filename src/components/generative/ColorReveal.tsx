@@ -26,9 +26,10 @@ export const ColorReveal: React.FC<ColorRevealProps> = ({
   const glowOverlayRef = useRef<HTMLDivElement>(null);
 
   const gradients: Record<string, string> = {
-    'cyan-violet': 'linear-gradient(135deg, rgba(0, 229, 255, 0.22) 0%, rgba(108, 99, 255, 0.18) 50%, rgba(168, 85, 247, 0.25) 100%)',
-    'blue-cyan': 'linear-gradient(90deg, rgba(108, 99, 255, 0.25) 0%, rgba(0, 229, 255, 0.25) 100%)',
-    'electric-mern': 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(245, 158, 11, 0.15) 30%, rgba(0, 229, 255, 0.22) 70%, rgba(108, 99, 255, 0.25) 100%)',
+    'gold-obsidian': 'linear-gradient(135deg, rgba(214, 179, 106, 0.22) 0%, rgba(185, 149, 85, 0.18) 50%, rgba(229, 201, 138, 0.22) 100%)',
+    'cyan-violet': 'linear-gradient(135deg, rgba(214, 179, 106, 0.22) 0%, rgba(185, 149, 85, 0.18) 50%, rgba(229, 201, 138, 0.22) 100%)',
+    'blue-cyan': 'linear-gradient(90deg, rgba(214, 179, 106, 0.25) 0%, rgba(185, 149, 85, 0.25) 100%)',
+    'electric-mern': 'linear-gradient(135deg, rgba(214, 179, 106, 0.2) 0%, rgba(185, 149, 85, 0.15) 30%, rgba(229, 201, 138, 0.22) 70%, rgba(185, 149, 85, 0.25) 100%)',
   };
 
   useEffect(() => {
@@ -134,7 +135,7 @@ export const ColorReveal: React.FC<ColorRevealProps> = ({
       {/* Shimmering Scan Wave */}
       <div
         ref={glowOverlayRef}
-        className="absolute inset-0 pointer-events-none z-20 bg-gradient-to-r from-transparent via-[#00E5FF]/40 to-transparent"
+        className="absolute inset-0 pointer-events-none z-20 bg-gradient-to-r from-transparent via-[#D6B36A]/30 to-transparent"
         style={{ transform: 'translateX(-100%)' }}
       />
 

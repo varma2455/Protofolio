@@ -33,7 +33,7 @@ export const GenerativeArrowEngine: React.FC<GenerativeArrowEngineProps> = ({
   viewBox = '0 0 1200 800',
   preset = 'ambient',
   density = 'normal',
-  colorPalette = ['#00E5FF', '#6C63FF', '#A855F7', '#38BDF8'],
+  colorPalette = ['#D6B36A', '#B99555', '#E5C98A', '#C49B4B'],
   autoPlay = true,
   triggerOnScroll = true,
   scrollTriggerStart = 'top 80%',
@@ -64,12 +64,12 @@ export const GenerativeArrowEngine: React.FC<GenerativeArrowEngineProps> = ({
 
     // Palette variants
     const glowMap: Record<string, string> = {
-      '#00E5FF': 'rgba(0, 229, 255, 0.45)',
-      '#6C63FF': 'rgba(108, 99, 255, 0.45)',
-      '#A855F7': 'rgba(168, 85, 247, 0.45)',
-      '#38BDF8': 'rgba(56, 189, 248, 0.45)',
-      '#10B981': 'rgba(16, 185, 129, 0.45)',
-      '#F59E0B': 'rgba(245, 158, 11, 0.45)',
+      '#D6B36A': 'rgba(214, 179, 106, 0.35)',
+      '#B99555': 'rgba(185, 149, 85, 0.3)',
+      '#E5C98A': 'rgba(229, 201, 138, 0.3)',
+      '#C49B4B': 'rgba(196, 155, 75, 0.3)',
+      '#10B981': 'rgba(214, 179, 106, 0.3)',
+      '#F59E0B': 'rgba(229, 201, 138, 0.3)',
     };
 
     if (preset === 'hero') {

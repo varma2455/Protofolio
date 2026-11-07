@@ -43,8 +43,8 @@ export const SectionTransition: React.FC<SectionTransitionProps> = ({
       >
         <ArrowPath
           d={pathD}
-          color="#00E5FF"
-          glowColor="rgba(0, 229, 255, 0.4)"
+          color="#D6B36A"
+          glowColor="rgba(214, 179, 106, 0.35)"
           strokeWidth={1.4}
           duration={1.2}
           hasArrowHead={true}
@@ -53,14 +53,14 @@ export const SectionTransition: React.FC<SectionTransitionProps> = ({
         />
 
         {/* Start and End Anchor Calibrators */}
-        <circle cx="500" cy="6" r="3" fill="#6C63FF" filter="drop-shadow(0 0 4px #6C63FF)" />
-        <circle cx="500" cy="74" r="3" fill="#00E5FF" filter="drop-shadow(0 0 4px #00E5FF)" />
+        <circle cx="500" cy="6" r="3" fill="#B99555" filter="drop-shadow(0 0 4px #B99555)" />
+        <circle cx="500" cy="74" r="3" fill="#D6B36A" filter="drop-shadow(0 0 4px #D6B36A)" />
       </svg>
 
       {/* Ambient Telemetry Badge */}
-      <div className="absolute px-3 py-0.5 rounded-full bg-[#05060A]/80 border border-white/[0.08] backdrop-blur-md flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-ping" />
-        <span className="text-[9px] font-mono tracking-widest text-slate-500 uppercase">
+      <div className="absolute px-3 py-0.5 rounded-full bg-[#0C0B09]/80 border border-[rgba(214,179,106,0.20)] backdrop-blur-md flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#D6B36A] animate-ping" />
+        <span className="text-[9px] font-mono tracking-widest text-[#B9B2A5] uppercase">
           LINK: {fromSection} &rarr; {toSection} // {coordinates}
         </span>
       </div>
