@@ -142,7 +142,7 @@ export const ConstructedCard: React.FC<ConstructedCardProps> = ({
     return { x, y };
   }, []);
 
-  // Card Construction Sequence with 8 Arrow Agents Pool
+  // Card Construction Sequence with 10 Arrow Agents Pool
   const runCardConstruction = useCallback(() => {
     if (stage !== 'hidden') return;
 

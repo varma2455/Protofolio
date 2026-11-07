@@ -48,7 +48,7 @@ export const ConstructedHeading: React.FC<ConstructedHeadingProps> = ({
     return () => window.removeEventListener('construct-all-regions', handleInstant);
   }, [id, childIndex, notifyChildComplete]);
 
-  // Painting sweep animation via 8-arrow pool
+  // Painting sweep animation via 10-arrow pool
   useEffect(() => {
     if (
       isParentActive &&

@@ -27,7 +27,7 @@ export * from './ConstructedButton';
 export * from './ArrowConstructionSequence';
 export * from './ArrowTextPaintingSequence';
 
-// 8 Persistent Intelligent Arrow Agents Architecture
+// 10 Persistent Intelligent Arrow Agents & Sudarshan Chakra Architecture
 export * from './GlobalArrowPool';
 export * from './ScrollVelocityController';
 export * from './ArrowTaskManager';

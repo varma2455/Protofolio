@@ -47,7 +47,7 @@ export const App: React.FC = () => {
       {/* CENTRAL SCROLL-TRIGGERED ARROW PAINTING CONTROLLER */}
       <ScrollConstructionController />
 
-      {/* EXACTLY 8 PERSISTENT INTELLIGENT ARROW AGENTS & CIRCULAR HOME FORMATION */}
+      {/* EXACTLY 10 PERSISTENT INTELLIGENT ARROW AGENTS & SUDARSHAN CHAKRA ENERGY WHEEL */}
       <GlobalArrowOverlay />
 
       {/* Main Website Structure */}

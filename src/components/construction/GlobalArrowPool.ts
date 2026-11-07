@@ -1,7 +1,8 @@
 /**
  * GlobalArrowPool.ts
- * Manages the persistent pool of EXACTLY 8 intelligent arrow agents.
- * Strict constraint: Never instantiate more than 8 arrows. All sections share this pool.
+ * Manages the persistent pool of EXACTLY 10 intelligent arrow agents and their
+ * Sudarshan Chakra-inspired circular energy wheel formation.
+ * Strict constraint: Never instantiate more than 10 arrows. All sections share this pool.
  */
 
 export interface ArrowTrailPoint {
@@ -13,8 +14,8 @@ export interface ArrowTrailPoint {
 export type ArrowState = 'home' | 'traveling' | 'working' | 'returning';
 
 export interface ArrowAgent {
-  id: string; // 'arrow-1' ... 'arrow-8'
-  index: number; // 0..7
+  id: string; // 'arrow-1' ... 'arrow-10'
+  index: number; // 0..9
   homeAngle: number; // in radians
   state: ArrowState;
   x: number;
@@ -31,32 +32,35 @@ export interface ArrowAgent {
   lastUsedTimestamp: number;
 }
 
+// 10 Futuristic Metallic Blue, Electric Blue, and Subtle Silver Arrow Agent styles
 const AGENT_COLORS = [
-  { color: '#D6B36A', glow: 'rgba(214, 179, 106, 0.45)' }, // Metallic Champagne Gold
-  { color: '#F5F0E6', glow: 'rgba(245, 240, 230, 0.45)' }, // Warm Ivory Silver
-  { color: '#B99555', glow: 'rgba(185, 149, 85, 0.40)' },  // Warm Bronze Gold
-  { color: '#E5C98A', glow: 'rgba(229, 201, 138, 0.45)' }, // Bright Light Gold
-  { color: '#CBD5E1', glow: 'rgba(203, 213, 225, 0.40)' }, // Metallic Chrome Silver
-  { color: '#D6B36A', glow: 'rgba(214, 179, 106, 0.45)' }, // Champagne Gold
-  { color: '#B99555', glow: 'rgba(185, 149, 85, 0.40)' },  // Bronze
-  { color: '#F5F0E6', glow: 'rgba(245, 240, 230, 0.45)' }, // Silver Ivory
+  { color: '#00E5FF', glow: 'rgba(0, 229, 255, 0.50)' }, // Electric Cyan
+  { color: '#38BDF8', glow: 'rgba(56, 189, 248, 0.45)' }, // Sky Electric Blue
+  { color: '#F0F9FF', glow: 'rgba(240, 249, 255, 0.50)' }, // Icy Silver Highlight
+  { color: '#0284C7', glow: 'rgba(2, 132, 199, 0.40)' },  // Deep Tech Blue
+  { color: '#60A5FA', glow: 'rgba(96, 165, 250, 0.45)' },  // Luminous Azure
+  { color: '#00D2FF', glow: 'rgba(0, 210, 255, 0.50)' },  // Neon Cyan
+  { color: '#93C5FD', glow: 'rgba(147, 197, 253, 0.40)' }, // Electric Ice
+  { color: '#2563EB', glow: 'rgba(37, 99, 235, 0.40)' },  // Metallic Royal Cobalt
+  { color: '#E2E8F0', glow: 'rgba(226, 232, 240, 0.45)' }, // Chrome Silver
+  { color: '#0EA5E9', glow: 'rgba(14, 165, 233, 0.45)' }, // Electric Azure
 ];
 
 class GlobalArrowPoolManager {
   private static instance: GlobalArrowPoolManager;
   public readonly agents: ArrowAgent[] = [];
   public circleCenter: { x: number; y: number } = { x: 0, y: 0 };
-  public circleRadius: number = 85;
+  public circleRadius: number = 100;
   public circleRotation: number = 0; // degrees
 
   public isStarted: boolean = false;
   private targetCircleCenter: { x: number; y: number } = { x: 0, y: 0 };
-  private targetRadius: number = 85;
+  private targetRadius: number = 100;
 
   private constructor() {
-    // Create exactly 8 persistent arrow agents once
-    for (let i = 0; i < 8; i++) {
-      const homeAngle = (i * 2 * Math.PI) / 8;
+    // Create exactly 10 persistent arrow agents once
+    for (let i = 0; i < 10; i++) {
+      const homeAngle = (i * 2 * Math.PI) / 10;
       this.agents.push({
         id: `arrow-${i + 1}`,
         index: i,
@@ -107,19 +111,19 @@ class GlobalArrowPoolManager {
       const vh = window.innerHeight;
 
       if (!this.isStarted) {
-        // Initial state: Centered majestically in the viewport
+        // Initial state: Centered majestically as the Sudarshan Chakra energy wheel
         this.targetCircleCenter = {
           x: vw / 2,
           y: vh * 0.44,
         };
-        this.targetRadius = vw > 768 ? 95 : 70;
+        this.targetRadius = vw > 768 ? 105 : 75;
       } else {
-        // Active scroll state: Docked as an elegant master HUD on the right
+        // Active scroll state: Docked as a sleek master HUD on the right
         this.targetCircleCenter = {
-          x: vw > 1024 ? vw - 120 : vw - 65,
-          y: vw > 1024 ? vh * 0.38 : 75,
+          x: vw > 1024 ? vw - 125 : vw - 68,
+          y: vw > 1024 ? vh * 0.38 : 78,
         };
-        this.targetRadius = vw > 1024 ? 65 : 45;
+        this.targetRadius = vw > 1024 ? 68 : 46;
       }
     }
   }
@@ -147,7 +151,7 @@ class GlobalArrowPoolManager {
   }
 
   /**
-   * Acquire an available arrow from the 8-arrow pool.
+   * Acquire an available arrow from the 10-arrow pool.
    * If excludeArrowId is provided (e.g. for text painting after boundary), another arrow is chosen.
    */
   public acquireAvailableArrow(excludeArrowId?: string | null): ArrowAgent | null {

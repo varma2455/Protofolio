@@ -1,8 +1,9 @@
 /**
  * GlobalArrowOverlay.tsx
- * Full-viewport SVG overlay that renders EXACTLY 8 persistent arrow agents and their circular home formation.
- * - All 8 arrows exist permanently and are never duplicated or cloned.
- * - Circular formation rotates continuously; velocity scales with visitor scroll speed.
+ * Full-viewport SVG overlay that renders EXACTLY 10 persistent arrow agents and their
+ * Sudarshan Chakra-inspired circular energy wheel formation.
+ * - All 10 arrows exist permanently and are never duplicated or cloned.
+ * - Circular chakra formation rotates smoothly; speed scales dynamically with scroll velocity.
  * - Dispatches arrows to boundary and text tasks, then returns them smoothly to their exact circular slots.
  */
 
@@ -18,8 +19,9 @@ export const GlobalArrowOverlay: React.FC = () => {
   // Position and state tracking refs for 60fps rendering without full React tree re-renders
   const animFrameRef = useRef<number | null>(null);
   const homeCircleRotationRef = useRef<number>(0);
+  const currentSpeedRef = useRef<number>(0.32);
 
-  // Per-agent flight animation data
+  // Per-agent flight animation data for EXACTLY 10 Arrow Agents
   const flightDataRef = useRef<
     Array<{
       startX: number;
@@ -35,7 +37,7 @@ export const GlobalArrowOverlay: React.FC = () => {
       perimeter?: number;
     }>
   >(
-    Array.from({ length: 8 }, () => ({
+    Array.from({ length: 10 }, () => ({
       startX: 0,
       startY: 0,
       startAngle: 0,
@@ -45,11 +47,6 @@ export const GlobalArrowOverlay: React.FC = () => {
       duration: 1000,
     }))
   );
-
-  // Calculate perimeter distance around a rounded rectangle
-  const computeRoundedRectPerimeter = (w: number, h: number, r: number) => {
-    return 2 * (w - 2 * r) + 2 * (h - 2 * r) + 2 * Math.PI * r;
-  };
 
   // Get point and tangent angle at fraction p (0..1) around rounded rectangle
   const getRoundedRectPoint = (
@@ -154,23 +151,26 @@ export const GlobalArrowOverlay: React.FC = () => {
 
   // Main 60fps Animation Loop
   const animate = useCallback((timestamp: number) => {
-    // 1. Rotate Home Circle continuously (speed scales with scroll velocity)
-    const baseRotationSpeed = 0.35; // degrees/frame
-    const speedMult = scrollVelocity.speedMultiplier;
-    homeCircleRotationRef.current = (homeCircleRotationRef.current + baseRotationSpeed * speedMult) % 360;
+    // 1. Rotate Sudarshan Chakra continuously (speed dynamically scales with scroll velocity)
+    const baseRotationSpeed = 0.32; // degrees/frame idle
+    const targetSpeed = baseRotationSpeed * scrollVelocity.speedMultiplier;
+    // Exponential smoothing for fluid acceleration & deceleration without jumps
+    currentSpeedRef.current += (targetSpeed - currentSpeedRef.current) * 0.08;
+    homeCircleRotationRef.current = (homeCircleRotationRef.current + currentSpeedRef.current) % 360;
+
     GlobalArrowPool.circleRotation = homeCircleRotationRef.current;
     GlobalArrowPool.stepCircleCenter();
 
     const pool = GlobalArrowPool;
     const taskMgr = ArrowTaskManager;
 
-    // 2. Update each of the EXACTLY 8 Arrow Agents
+    // 2. Update each of the EXACTLY 10 Arrow Agents
     for (let i = 0; i < pool.agents.length; i++) {
       const agent = pool.agents[i];
       const flight = flightDataRef.current[i];
       const homePos = pool.getHomePosition(agent.index);
 
-      // STATE: HOME -> Sitting in circular formation
+      // STATE: HOME -> Sitting securely in Sudarshan Chakra circular docking position
       if (agent.state === 'home') {
         agent.x = homePos.x;
         agent.y = homePos.y;
@@ -179,20 +179,20 @@ export const GlobalArrowOverlay: React.FC = () => {
         continue;
       }
 
-      // STATE: TRAVELING -> Flying from circular home position to target
+      // STATE: TRAVELING -> Flying smoothly from rotating chakra slot toward target
       if (agent.state === 'traveling') {
         if (flight.startTime === 0) {
           flight.startX = agent.x;
           flight.startY = agent.y;
           flight.startAngle = agent.angle;
           flight.startTime = timestamp;
-          // Travel duration scaled by scroll velocity
+          // Travel duration dynamically scaled by scroll velocity
           flight.duration = scrollVelocity.scaleDuration(650);
         }
 
         const elapsed = timestamp - flight.startTime;
         const p = Math.min(1, elapsed / flight.duration);
-        // Smooth easeInOutQuad
+        // Smooth easeInOutQuad curve
         const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
 
         agent.x = flight.startX + (agent.targetX - flight.startX) * ease;
@@ -202,8 +202,8 @@ export const GlobalArrowOverlay: React.FC = () => {
         const dy = agent.targetY - flight.startY;
         agent.angle = (Math.atan2(dy, dx) * 180) / Math.PI;
 
-        // Record trailing particle
-        agent.trail.unshift({ x: agent.x, y: agent.y, opacity: 0.8 });
+        // Record trailing electric particle
+        agent.trail.unshift({ x: agent.x, y: agent.y, opacity: 0.85 });
         if (agent.trail.length > 8) agent.trail.pop();
 
         if (p >= 1) {
@@ -262,11 +262,11 @@ export const GlobalArrowOverlay: React.FC = () => {
         }
 
         // Record trailing particle
-        agent.trail.unshift({ x: agent.x, y: agent.y, opacity: 0.9 });
+        agent.trail.unshift({ x: agent.x, y: agent.y, opacity: 0.95 });
         if (agent.trail.length > 10) agent.trail.pop();
 
         if (p >= 1) {
-          // Work complete! Notify task manager and return arrow to home circle
+          // Work complete! Notify task manager and return arrow to home chakra
           taskMgr.completeTask(task, agent);
           agent.state = 'returning';
           flight.startTime = 0;
@@ -274,7 +274,7 @@ export const GlobalArrowOverlay: React.FC = () => {
         continue;
       }
 
-      // STATE: RETURNING -> Flying back to circular home slot
+      // STATE: RETURNING -> Flying back to circular home slot on the rotating chakra
       if (agent.state === 'returning') {
         if (flight.startTime === 0) {
           flight.startX = agent.x;
@@ -287,7 +287,7 @@ export const GlobalArrowOverlay: React.FC = () => {
         const p = Math.min(1, elapsed / flight.duration);
         const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
 
-        // Target is the rotating home position
+        // Target is the rotating home position on the chakra
         const currentHome = pool.getHomePosition(agent.index);
 
         agent.x = flight.startX + (currentHome.x - flight.startX) * ease;
@@ -297,11 +297,11 @@ export const GlobalArrowOverlay: React.FC = () => {
         const dy = currentHome.y - flight.startY;
         agent.angle = (Math.atan2(dy, dx) * 180) / Math.PI;
 
-        agent.trail.unshift({ x: agent.x, y: agent.y, opacity: 0.6 * (1 - p) });
+        agent.trail.unshift({ x: agent.x, y: agent.y, opacity: 0.7 * (1 - p) });
         if (agent.trail.length > 6) agent.trail.pop();
 
         if (p >= 1) {
-          // Docked back into circular home position!
+          // Docked back into exact rotating chakra slot!
           agent.state = 'home';
           agent.x = currentHome.x;
           agent.y = currentHome.y;
@@ -328,6 +328,7 @@ export const GlobalArrowOverlay: React.FC = () => {
   const pool = GlobalArrowPool;
   const center = pool.circleCenter;
   const radius = pool.circleRadius;
+  const rotation = homeCircleRotationRef.current;
 
   return (
     <svg
@@ -336,117 +337,313 @@ export const GlobalArrowOverlay: React.FC = () => {
       style={{ filter: 'drop-shadow(0 0 1px rgba(0,0,0,0.5))' }}
     >
       <defs>
-        {/* Metallic Gold & Silver Shading Filters */}
-        <filter id="gold-glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
+        {/* Futuristic Electric Blue & Silver Shading Filters */}
+        <filter id="chakra-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
 
-        <linearGradient id="gold-metallic" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#F5F0E6" />
-          <stop offset="50%" stopColor="#D6B36A" />
-          <stop offset="100%" stopColor="#B99555" />
+        <filter id="blade-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <filter id="hub-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        {/* High-Tech Metallic Blue Gradients */}
+        <linearGradient id="arrow-blue-metallic" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F0F9FF" />
+          <stop offset="25%" stopColor="#00E5FF" />
+          <stop offset="65%" stopColor="#0284C7" />
+          <stop offset="100%" stopColor="#1D4ED8" />
         </linearGradient>
 
-        <linearGradient id="silver-metallic" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="arrow-silver-blue" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#FFFFFF" />
-          <stop offset="50%" stopColor="#CBD5E1" />
-          <stop offset="100%" stopColor="#94A3B8" />
+          <stop offset="40%" stopColor="#BAE6FD" />
+          <stop offset="75%" stopColor="#94A3B8" />
+          <stop offset="100%" stopColor="#38BDF8" />
         </linearGradient>
+
+        {/* Sudarshan Chakra Serrated Aerodynamic Blade Gradient */}
+        <linearGradient id="chakra-blade-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.95" />
+          <stop offset="45%" stopColor="#0284C7" stopOpacity="0.8" />
+          <stop offset="85%" stopColor="#1E293B" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#030712" stopOpacity="0.9" />
+        </linearGradient>
+
+        {/* Central Core Gradient */}
+        <radialGradient id="chakra-core-gradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#00E5FF" stopOpacity="1" />
+          <stop offset="45%" stopColor="#0284C7" stopOpacity="0.85" />
+          <stop offset="75%" stopColor="#0B132B" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#030712" stopOpacity="1" />
+        </radialGradient>
       </defs>
 
       {/* =========================================================================
-          1. THE PERSISTENT CIRCULAR FORMATION (Home Docking Ring)
+          1. THE ROTATING SUDARSHAN CHAKRA ENERGY FORMATION (Home Docking Ring)
           ========================================================================= */}
       <g transform={`translate(${center.x}, ${center.y})`}>
-        {/* Outer Orbital Orbit Ring */}
-        <circle
-          r={radius}
-          fill="none"
-          stroke="rgba(214, 179, 106, 0.22)"
-          strokeWidth="1.2"
-          strokeDasharray="4 6"
-        />
+        {/* Fully Synchronized Rotating Chakra Disc Group */}
+        <g transform={`rotate(${rotation})`}>
+          {/* Outer Electric Atmosphere Ring */}
+          <circle
+            r={radius * 1.3}
+            fill="none"
+            stroke="rgba(0, 229, 255, 0.12)"
+            strokeWidth="1"
+            strokeDasharray="6 8"
+          />
 
-        {/* Inner Gyroscopic Ring */}
-        <circle
-          r={radius * 0.65}
-          fill="none"
-          stroke="rgba(214, 179, 106, 0.15)"
-          strokeWidth="1"
-          strokeDasharray="2 4"
-        />
+          {/* Outer Luminous Energy Halo Ring */}
+          <circle
+            r={radius * 1.15}
+            fill="none"
+            stroke="rgba(56, 189, 248, 0.28)"
+            strokeWidth="1.2"
+            filter="url(#chakra-glow)"
+          />
 
-        {/* Central Core Telemetry Reticle */}
-        <circle
-          r="16"
-          fill="#14120F"
-          stroke="rgba(214, 179, 106, 0.35)"
-          strokeWidth="1.2"
-        />
-        <circle r="4" fill="#D6B36A" filter="url(#gold-glow)" />
+          {/* 10 SUDARSHAN CHAKRA BLADE EXTENSIONS (Serrated aerodynamic energy fins) */}
+          {Array.from({ length: 10 }).map((_, i) => {
+            const bladeAngle = i * 36 + 18; // Exactly halfway between each of the 10 arrows
+            return (
+              <g key={`chakra-blade-${i}`} transform={`rotate(${bladeAngle})`}>
+                {/* Curved Aerodynamic Blade Fin */}
+                <path
+                  d={`M -7,-${radius * 0.88} 
+                      C -4,-${radius * 1.05} 6,-${radius * 1.16} 16,-${radius * 1.28} 
+                      C 11,-${radius * 1.15} 4,-${radius * 1.02} 2,-${radius * 0.88} Z`}
+                  fill="url(#chakra-blade-gradient)"
+                  stroke="rgba(0, 229, 255, 0.65)"
+                  strokeWidth="0.8"
+                  filter="url(#blade-glow)"
+                />
+                {/* Internal Luminous Energy Spine */}
+                <path
+                  d={`M -2,-${radius * 0.95} L 12,-${radius * 1.22}`}
+                  stroke="#F0F9FF"
+                  strokeWidth="0.85"
+                  opacity="0.9"
+                />
+                {/* Micro-spark at blade tip */}
+                <circle
+                  cx="16"
+                  cy={-radius * 1.28}
+                  r="1.2"
+                  fill="#FFFFFF"
+                  filter="url(#chakra-glow)"
+                />
+              </g>
+            );
+          })}
 
-        {/* Telemetry Micro-Badge under the ring */}
-        <g transform={`translate(0, ${radius + 22})`}>
-          <rect
-            x="-65"
-            y="-10"
-            width="130"
-            height="20"
-            rx="10"
-            fill="#14120F"
-            stroke="rgba(214, 179, 106, 0.25)"
+          {/* Outer Circumference Carrier Track */}
+          <circle
+            r={radius}
+            fill="none"
+            stroke="rgba(56, 189, 248, 0.45)"
+            strokeWidth="1.6"
+          />
+
+          {/* 30 Precision Circumferential Hash Marks */}
+          {Array.from({ length: 30 }).map((_, idx) => (
+            <line
+              key={`hash-${idx}`}
+              x1="0"
+              y1={-radius - 3}
+              x2="0"
+              y2={-radius + 3}
+              stroke="rgba(0, 229, 255, 0.35)"
+              strokeWidth="0.8"
+              transform={`rotate(${idx * 12})`}
+            />
+          ))}
+
+          {/* 10 Radial Energy Spokes connecting Hub to Rim */}
+          {Array.from({ length: 10 }).map((_, i) => (
+            <g key={`spoke-${i}`} transform={`rotate(${i * 36})`}>
+              <line
+                x1="0"
+                y1={-24}
+                x2="0"
+                y2={-radius + 6}
+                stroke="rgba(56, 189, 248, 0.25)"
+                strokeWidth="1"
+              />
+              {/* Spoke Energy Relay Node */}
+              <circle
+                cx="0"
+                cy={-radius * 0.58}
+                r="1.8"
+                fill="#38BDF8"
+                stroke="rgba(0, 229, 255, 0.5)"
+                strokeWidth="0.5"
+              />
+            </g>
+          ))}
+
+          {/* Inner Concentric Circular Precision Rings */}
+          <circle
+            r={radius * 0.65}
+            fill="none"
+            stroke="rgba(0, 229, 255, 0.3)"
+            strokeWidth="1"
+            strokeDasharray="4 6"
+          />
+          <circle
+            r={radius * 0.45}
+            fill="none"
+            stroke="rgba(148, 163, 184, 0.22)"
+            strokeWidth="0.8"
+            strokeDasharray="2 3"
+          />
+
+          {/* Refined Central Power Hub */}
+          <circle
+            r="24"
+            fill="#070E1A"
+            stroke="rgba(56, 189, 248, 0.55)"
+            strokeWidth="1.5"
+          />
+
+          {/* 10 Precision Notches around Central Hub Rim */}
+          {Array.from({ length: 10 }).map((_, i) => (
+            <line
+              key={`hub-notch-${i}`}
+              x1="0"
+              y1="-24"
+              x2="0"
+              y2="-21"
+              stroke="#00E5FF"
+              strokeWidth="1.2"
+              transform={`rotate(${i * 36})`}
+            />
+          ))}
+
+          {/* Mid Hub Ring */}
+          <circle
+            r="16"
+            fill="#030712"
+            stroke="rgba(0, 229, 255, 0.45)"
             strokeWidth="1"
           />
-          <text
-            x="0"
-            y="3"
-            textAnchor="middle"
-            fill="#D6B36A"
-            fontSize="8.5"
-            fontFamily="monospace"
-            letterSpacing="1"
-          >
-            8 ARROW AGENTS // POOL
-          </text>
+
+          {/* Core Energy Nucleus */}
+          <circle
+            r="8"
+            fill="url(#chakra-core-gradient)"
+            filter="url(#hub-glow)"
+          />
+          <circle
+            r="4.5"
+            fill="#00E5FF"
+            filter="url(#chakra-glow)"
+          />
+          <circle
+            r="2"
+            fill="#FFFFFF"
+          />
+
+          {/* 10 Permanent Holographic Docking Sockets */}
+          {pool.agents.map((agent) => {
+            const angleRad = agent.homeAngle;
+            const relX = Math.cos(angleRad) * radius;
+            const relY = Math.sin(angleRad) * radius;
+            const isAway = agent.state !== 'home';
+
+            return (
+              <g key={`dock-${agent.id}`} transform={`translate(${relX}, ${relY})`}>
+                {/* Outer socket bracket */}
+                <circle
+                  r="8"
+                  fill={isAway ? 'rgba(3, 7, 18, 0.75)' : 'none'}
+                  stroke={isAway ? 'rgba(0, 229, 255, 0.6)' : 'rgba(56, 189, 248, 0.25)'}
+                  strokeWidth="1.2"
+                  strokeDasharray={isAway ? '2 3' : undefined}
+                />
+                {/* Deployed blinking cradle beacon */}
+                {isAway && (
+                  <circle
+                    r="2.5"
+                    fill="#00E5FF"
+                    filter="url(#chakra-glow)"
+                    className="animate-pulse"
+                  />
+                )}
+              </g>
+            );
+          })}
         </g>
 
-        {/* 8 Permanent Circular Docking Sockets (Ghost rings when arrow is deployed) */}
-        {pool.agents.map((agent) => {
-          const homePos = pool.getHomePosition(agent.index);
-          const relX = homePos.x - center.x;
-          const relY = homePos.y - center.y;
-          const isAway = agent.state !== 'home';
-
-          return (
-            <g key={`dock-${agent.id}`} transform={`translate(${relX}, ${relY})`}>
-              <circle
-                r="7"
-                fill={isAway ? 'rgba(33, 29, 23, 0.6)' : 'none'}
-                stroke={isAway ? 'rgba(214, 179, 106, 0.35)' : 'none'}
-                strokeWidth="1"
-                strokeDasharray={isAway ? '2 2' : undefined}
-              />
-              {isAway && (
-                <circle r="2" fill="#D6B36A" opacity="0.4" />
-              )}
-            </g>
-          );
-        })}
+        {/* Telemetry HUD Badge under the Sudarshan Chakra (stays horizontally oriented) */}
+        <g transform={`translate(0, ${radius + 28})`}>
+          <rect
+            x="-92"
+            y="-11"
+            width="184"
+            height="22"
+            rx="11"
+            fill="#070E1A"
+            stroke="rgba(56, 189, 248, 0.35)"
+            strokeWidth="1"
+          />
+          <circle
+            cx="-76"
+            cy="0"
+            r="3"
+            fill="#00E5FF"
+            filter="url(#chakra-glow)"
+          />
+          <text
+            x="-4"
+            y="3.5"
+            textAnchor="middle"
+            fill="#38BDF8"
+            fontSize="8"
+            fontFamily="monospace"
+            letterSpacing="1"
+            fontWeight="bold"
+          >
+            SUDARSHAN CHAKRA // 10 AGENTS
+          </text>
+          <text
+            x="76"
+            y="3.5"
+            textAnchor="end"
+            fill="#00E5FF"
+            fontSize="7.5"
+            fontFamily="monospace"
+            fontWeight="bold"
+          >
+            {scrollVelocity.speedMultiplier.toFixed(1)}X
+          </text>
+        </g>
       </g>
 
       {/* =========================================================================
-          2. THE EXACTLY 8 ARROW AGENTS (Never more, never less)
+          2. THE EXACTLY 10 ARROW AGENTS (Never more, never less)
           ========================================================================= */}
       {pool.agents.map((agent) => {
         return (
           <g key={agent.id}>
             {/* Luminous Particle Trail */}
             {agent.trail.map((pt, tIdx) => {
-              const r = Math.max(1, 3.2 - tIdx * 0.3);
+              const r = Math.max(1, 3.4 - tIdx * 0.3);
               const op = pt.opacity * (1 - tIdx / agent.trail.length);
               return (
                 <circle
@@ -468,43 +665,61 @@ export const GlobalArrowOverlay: React.FC = () => {
               <circle
                 cx="0"
                 cy="0"
-                r="11"
+                r="12"
                 fill={agent.glowColor}
-                opacity="0.35"
+                opacity="0.4"
+                filter="url(#chakra-glow)"
               />
 
-              {/* High-Gloss Aerodynamic Arrowhead */}
+              {/* High-Gloss Aerodynamic Supersonic Arrowhead */}
               <polygon
-                points="-10,-6 8,0 -10,6 -4,0"
-                fill={agent.index % 2 === 0 ? 'url(#gold-metallic)' : 'url(#silver-metallic)'}
+                points="-11,-7 11,0 -11,7 -5,0"
+                fill={agent.index % 2 === 0 ? 'url(#arrow-blue-metallic)' : 'url(#arrow-silver-blue)'}
                 stroke={agent.color}
                 strokeWidth="1"
-                filter="url(#gold-glow)"
+                filter="url(#blade-glow)"
               />
 
-              {/* Glowing Luminous Tip Particle */}
-              <circle cx="8" cy="0" r="2" fill="#F5F0E6" />
-              <circle cx="2" cy="0" r="1.5" fill={agent.color} />
+              {/* Aerodynamic Dual Stabilizer Fins */}
+              <polygon
+                points="-13,-8 -7,-5 -11,-3"
+                fill="url(#arrow-blue-metallic)"
+                stroke={agent.color}
+                strokeWidth="0.5"
+                opacity="0.85"
+              />
+              <polygon
+                points="-13,8 -7,5 -11,3"
+                fill="url(#arrow-blue-metallic)"
+                stroke={agent.color}
+                strokeWidth="0.5"
+                opacity="0.85"
+              />
+
+              {/* Glowing Luminous Tip Particles */}
+              <circle cx="11" cy="0" r="2.2" fill="#FFFFFF" />
+              <circle cx="4" cy="0" r="1.6" fill={agent.color} />
+              <circle cx="-1" cy="0" r="1.2" fill="#00E5FF" opacity="0.8" />
 
               {/* Agent ID Micro-Label when deployed */}
               {agent.state !== 'home' && (
-                <g transform="translate(-12, -10)">
+                <g transform="translate(-13, -11)">
                   <rect
                     x="-10"
                     y="-6"
-                    width="20"
-                    height="10"
-                    rx="3"
-                    fill="#14120F"
+                    width="22"
+                    height="11"
+                    rx="3.5"
+                    fill="#070E1A"
                     stroke={agent.color}
-                    strokeWidth="0.8"
+                    strokeWidth="0.9"
                   />
                   <text
-                    x="0"
-                    y="1.5"
+                    x="1"
+                    y="2"
                     textAnchor="middle"
                     fill={agent.color}
-                    fontSize="6"
+                    fontSize="6.5"
                     fontFamily="monospace"
                     fontWeight="bold"
                   >

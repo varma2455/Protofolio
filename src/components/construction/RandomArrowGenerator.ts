@@ -53,12 +53,12 @@ function seededRandom(seed: number): () => number {
   };
 }
 
-// Refined Obsidian Gold palette: Metallic Champagne Gold dominant with warm bronze-gold accents
+// Futuristic Electric Blue, Cobalt, and Metallic Silver palette matching the Sudarshan Chakra agents
 const PALETTES = [
-  { primary: '#D6B36A', glow: 'rgba(214, 179, 106, 0.25)', secondary: '#B99555' }, // Champagne Gold dominant
-  { primary: '#E5C98A', glow: 'rgba(214, 179, 106, 0.28)', secondary: '#D6B36A' }, // Light Champagne Gold
-  { primary: '#B99555', glow: 'rgba(185, 149, 85, 0.24)', secondary: '#D6B36A' }, // Warm Bronze Gold
-  { primary: '#D6B36A', glow: 'rgba(214, 179, 106, 0.25)', secondary: '#E5C98A' }, // Dual Gold
+  { primary: '#00E5FF', glow: 'rgba(0, 229, 255, 0.35)', secondary: '#38BDF8' }, // Electric Cyan
+  { primary: '#38BDF8', glow: 'rgba(56, 189, 248, 0.35)', secondary: '#0284C7' }, // Sky Electric Blue
+  { primary: '#0284C7', glow: 'rgba(2, 132, 199, 0.30)', secondary: '#00E5FF' },  // Deep Tech Blue
+  { primary: '#E2E8F0', glow: 'rgba(226, 232, 240, 0.35)', secondary: '#38BDF8' }, // Metallic Chrome Silver
 ];
 
 const EDGES: ArrowEdge[] = [

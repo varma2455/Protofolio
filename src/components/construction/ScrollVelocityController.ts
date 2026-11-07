@@ -1,15 +1,17 @@
 /**
  * ScrollVelocityController.ts
  * Real-time scroll velocity tracker adapting arrow agent speed and concurrency.
- * - Slow scroll: 1-2 arrows, majestic durations (1.4 - 1.8s)
- * - Normal scroll: 2-4 arrows, smooth durations (0.8 - 1.1s)
- * - Fast/very fast scroll: up to all 8 arrows working concurrently, accelerated durations (0.35 - 0.5s)
+ * - Slow scrolling: 1-2 arrows work at a time (durations: 1.2 - 1.6s)
+ * - Normal scrolling: 3-5 arrows work simultaneously (durations: 0.8 - 1.1s)
+ * - Fast scrolling: 6-8 arrows work simultaneously (durations: 0.5 - 0.7s)
+ * - Extremely fast scrolling: all 10 arrows work on separate pending tasks (durations: 0.28 - 0.45s)
+ * Never allow more than 10 arrows to exist or operate.
  */
 
 export class ScrollVelocityController {
   private static instance: ScrollVelocityController;
   public velocity: number = 0; // px/sec
-  public speedMultiplier: number = 1.0; // 1.0x to 3.5x
+  public speedMultiplier: number = 1.0; // 1.0x to 3.8x
   public direction: 'down' | 'up' | 'idle' = 'idle';
   public maxConcurrentArrows: number = 2;
 
@@ -52,19 +54,23 @@ export class ScrollVelocityController {
     // Smooth velocity with lerp
     this.velocity = this.velocity * 0.4 + rawVelocity * 0.6;
 
-    // Speed multiplier: rawVelocity ~ 0 => 1.0x, rawVelocity ~ 3 => 3.5x
-    const multiplier = Math.min(3.5, Math.max(1.0, 1.0 + this.velocity * 1.5));
+    // Speed multiplier: rawVelocity ~ 0 => 1.0x, high speed => up to 3.8x
+    const multiplier = Math.min(3.8, Math.max(1.0, 1.0 + this.velocity * 1.6));
     this.speedMultiplier = multiplier;
 
-    // Concurrency based on velocity
+    // Concurrency based on velocity matching strict specifications:
+    // - Slow scrolling: 1-2 arrows work at a time
+    // - Normal scrolling: 3-5 arrows can work simultaneously
+    // - Fast scrolling: 6-8 arrows can work simultaneously
+    // - Extremely fast scrolling: all 10 arrows work on separate pending tasks
     if (this.velocity < 0.3) {
-      this.maxConcurrentArrows = 2; // slow scroll
+      this.maxConcurrentArrows = 2; // slow scroll: 1-2
     } else if (this.velocity < 1.2) {
-      this.maxConcurrentArrows = 4; // normal scroll
+      this.maxConcurrentArrows = 5; // normal scroll: 3-5
     } else if (this.velocity < 2.5) {
-      this.maxConcurrentArrows = 6; // fast scroll
+      this.maxConcurrentArrows = 8; // fast scroll: 6-8
     } else {
-      this.maxConcurrentArrows = 8; // very fast scroll: unleash all 8 arrows
+      this.maxConcurrentArrows = 10; // extremely fast scroll: all 10 arrows
     }
 
     this.lastScrollY = currentY;
@@ -72,7 +78,7 @@ export class ScrollVelocityController {
 
     this.notifyListeners();
 
-    // Idle detection
+    // Idle detection with smooth recovery
     clearTimeout(this.idleTimeout);
     this.idleTimeout = setTimeout(() => {
       this.velocity = 0;
@@ -80,7 +86,7 @@ export class ScrollVelocityController {
       this.direction = 'idle';
       this.maxConcurrentArrows = 2;
       this.notifyListeners();
-    }, 180);
+    }, 200);
   };
 
   public subscribe(callback: (velocity: number, multiplier: number) => void): () => void {

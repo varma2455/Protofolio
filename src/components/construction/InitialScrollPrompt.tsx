@@ -27,16 +27,16 @@ export const InitialScrollPrompt: React.FC<InitialScrollPromptProps> = ({
     >
       {/* Top Header Tag */}
       <div className="flex flex-col items-center pointer-events-auto cursor-pointer" onClick={onInitiateScroll}>
-        <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[rgba(214,179,106,0.20)] bg-[#14120F] shadow-lg">
-          <span className="w-2 h-2 rounded-full bg-[#D6B36A] animate-ping" />
-          <span className="text-xs font-mono tracking-widest text-[#F5F0E6]">
-            VARMA.DEV &bull; 8 PERSISTENT ARROW AGENTS
+        <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[rgba(56,189,248,0.30)] bg-[#070E1A] shadow-lg">
+          <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-ping" />
+          <span className="text-xs font-mono tracking-widest text-[#F0F9FF]">
+            VARMA.DEV &bull; SUDARSHAN CHAKRA // 10 ARROW AGENTS
           </span>
         </div>
       </div>
 
-      {/* Spacer where the 8-Arrow Rotating Circular Formation is centered */}
-      <div className="w-64 h-64 pointer-events-none" />
+      {/* Spacer where the 10-Arrow Rotating Chakra Energy Wheel is centered */}
+      <div className="w-72 h-72 pointer-events-none" />
 
       {/* Bottom Instructions and CTA */}
       <div
@@ -48,16 +48,16 @@ export const InitialScrollPrompt: React.FC<InitialScrollPromptProps> = ({
         </h2>
         
         <p className="text-xs sm:text-sm text-[#B9B2A5] font-mono mb-6 max-w-xs leading-relaxed">
-          8 autonomous arrow agents physically construct the website as you scroll.
+          10 autonomous arrow agents physically construct the website as you scroll.
         </p>
 
         {/* Scroll Indicator */}
-        <div className="flex flex-col items-center gap-2 font-mono text-[11px] tracking-widest text-[#D6B36A]">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#211D17] border border-[rgba(214,179,106,0.25)] shadow-md">
-            <ArrowDown className="w-4 h-4 text-[#D6B36A] animate-bounce" />
-            <span className="font-bold">SCROLL TO DISPATCH AGENTS</span>
+        <div className="flex flex-col items-center gap-2 font-mono text-[11px] tracking-widest text-[#38BDF8]">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0B132B] border border-[rgba(56,189,248,0.35)] shadow-md">
+            <ArrowDown className="w-4 h-4 text-[#00E5FF] animate-bounce" />
+            <span className="font-bold text-[#F0F9FF]">SCROLL TO DISPATCH CHAKRA AGENTS</span>
           </div>
-          <span className="text-[10px] text-[#B9B2A5]">// SCROLL SPEED ADAPTS ARROW VELOCITY</span>
+          <span className="text-[10px] text-[#94A3B8]">// SCROLL SPEED ADAPTS ROTATION & CONCURRENCY</span>
         </div>
 
         {/* Quick View Alternative */}

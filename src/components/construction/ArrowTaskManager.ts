@@ -1,9 +1,9 @@
 /**
  * ArrowTaskManager.ts
- * Central construction coordinator for the 8 persistent arrow agents.
+ * Central construction coordinator for the 10 persistent arrow agents.
  * - Manages target registry, priority task queue, and velocity-responsive dispatching.
- * - Guarantees that a DIFFERENT arrow from the 8-arrow pool paints the text than the one that built the boundary.
- * - Handles viewport priority and home circle returns.
+ * - Guarantees that a DIFFERENT arrow from the 10-arrow pool paints the text than the one that built the boundary.
+ * - Handles viewport priority and home chakra returns.
  */
 
 import { GlobalArrowPool, ArrowAgent } from './GlobalArrowPool';
