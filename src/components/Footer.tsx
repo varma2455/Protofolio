@@ -24,7 +24,7 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="relative bg-[#0C0B09] border-t border-[rgba(214,179,106,0.20)] pt-16 pb-12 overflow-hidden">
+    <footer className="relative border-t border-[rgba(214,179,106,0.20)] pt-16 pb-12 overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 bg-grid-cyber opacity-15 pointer-events-none" />
       <div className="ambient-light-orb bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-[#D6B36A]/04" />

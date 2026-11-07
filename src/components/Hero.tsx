@@ -44,7 +44,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResumeModal }) => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center pt-28 pb-16 overflow-hidden bg-[#0C0B09]"
+      className="relative min-h-screen flex items-center justify-center pt-28 pb-16 overflow-hidden"
     >
       {/* Background Cyber Grid */}
       <div className="absolute inset-0 bg-grid-cyber opacity-35 pointer-events-none" />

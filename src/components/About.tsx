@@ -50,7 +50,7 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="relative py-28 bg-[#0C0B09] overflow-hidden">
+    <section id="about" className="relative py-28 overflow-hidden">
       {/* Background Cyber Grid */}
       <div className="absolute inset-0 bg-grid-cyber opacity-20 pointer-events-none" />
       <div className="ambient-light-orb top-1/2 left-0 w-[450px] h-[450px] bg-[#D6B36A]/05 -translate-y-1/2" />

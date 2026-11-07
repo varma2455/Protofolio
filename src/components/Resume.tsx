@@ -34,7 +34,7 @@ export const Resume: React.FC = () => {
   };
 
   return (
-    <section id="resume" className="relative py-28 bg-[#0C0B09] overflow-hidden">
+    <section id="resume" className="relative py-28 overflow-hidden">
       {/* Background Cyber Grid */}
       <div className="absolute inset-0 bg-grid-cyber opacity-20 pointer-events-none" />
       <div className="ambient-light-orb top-1/3 right-1/4 w-[450px] h-[450px] bg-[#D6B36A]/05" />
